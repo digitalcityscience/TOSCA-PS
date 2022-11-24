@@ -51,9 +51,11 @@ const submit = async () => {
 
   try {
     await db.postMasterplan(newProject.value);
-    activeModuleStep.value++;
+
+    pushAlert('Project was created successfully.', 'success');
+    exitModule();
   } catch (err) {
-    pushAlert((err as Error).message);
+    pushAlert((err as Error).message, 'danger');
   }
 };
 </script>
@@ -82,10 +84,6 @@ const submit = async () => {
       <ModuleButton class="primary" @click="submit()">Submit</ModuleButton>
       <ModuleButton class="secondary" @click="exitModule()">Cancel</ModuleButton>
     </template>
-  </ModuleStep>
-
-  <ModuleStep v-if="activeModuleStep === 1">
-    Project was created successfully.
   </ModuleStep>
 </template>
 

@@ -26,11 +26,8 @@ onMounted(async () => {
     const response = await db.getMasterplans();
     masterplans.value = await response.json();
   } catch (err) {
-    pushAlert((err as Error).message);
+    pushAlert((err as Error).message, 'danger');
   }
-
-  const response = await db.getPublicReviews();
-  console.log(await response.json());
 });
 
 const validate = () => {
@@ -59,9 +56,11 @@ const submit = async () => {
 
   try {
     await db.postPublicReview(publicReview.value);
-    activeModuleStep.value++;
+
+    pushAlert('Public review was created successfully.', 'success');
+    exitModule();
   } catch (err) {
-    pushAlert((err as Error).message);
+    pushAlert((err as Error).message, 'danger');
   }
 };
 </script>
@@ -87,10 +86,6 @@ const submit = async () => {
       <ModuleButton class="primary" @click="submit()">Submit</ModuleButton>
       <ModuleButton class="secondary" @click="exitModule()">Cancel</ModuleButton>
     </template>
-  </ModuleStep>
-
-  <ModuleStep v-if="activeModuleStep === 1">
-    Public review was created successfully.
   </ModuleStep>
 </template>
 

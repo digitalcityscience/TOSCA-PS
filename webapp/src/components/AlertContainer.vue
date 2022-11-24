@@ -12,7 +12,7 @@ const remove = (alert: Alert) => {
 
 <template>
   <div class="alert-container">
-    <div v-for="alert in alerts" :key="alert.timestamp" class="alert alert-danger" role="alert" >
+    <div v-for="alert in alerts" :key="alert.timestamp" :class="'alert alert-' + (alert.type ?? 'danger')" role="alert" >
       <span>{{ alert.message }}</span>
       <button class="btn btn-light" data-dismiss="alert" @click="remove(alert)">×</button>
     </div>

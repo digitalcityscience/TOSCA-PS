@@ -22,6 +22,7 @@ interface PublicReview {
 
 interface Alert {
   message: string;
+  type?: string;
   timestamp?: number;
 }
 
