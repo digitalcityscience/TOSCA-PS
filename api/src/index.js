@@ -34,6 +34,7 @@ app.post('/masterplans', jsonParser, async (req, res) => {
 
   const document = {
     title: req.body.title,
+    molgId: req.body.molgId,
     layerName: req.body.layerName,
     created: new Date()
   }

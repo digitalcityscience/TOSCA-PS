@@ -10,7 +10,6 @@ import ModuleStep from './shared/ModuleStep.vue';
 const globalStore = useGlobalStore();
 const { exitModule } = globalStore;
 const { activeModuleStep } = storeToRefs(globalStore);
-
 const { pushAlert } = useAlertsStore();
 
 const masterplans = ref<Masterplan[]>([]);
@@ -26,7 +25,6 @@ onMounted(async () => {
   try {
     const response = await db.getMasterplans();
     masterplans.value = await response.json();
-    console.log(masterplans.value);
   } catch (err) {
     pushAlert((err as Error).message);
   }
@@ -76,7 +74,7 @@ const submit = async () => {
       <div>
         <select id="publicReviewMasterplan" v-model="publicReview.masterplan">
           <option v-for="masterplan in masterplans" :key="masterplan._id" :value="masterplan._id">
-            {{ masterplan.title }})
+            {{ masterplan.title }} ({{ masterplan.molgId }})
           </option>
         </select>
       </div>

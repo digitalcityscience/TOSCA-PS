@@ -5,6 +5,7 @@ type Module = DefineComponent
 interface Masterplan {
   _id?: string
   title?: string
+  molgId?: string
   layerName?: string
   created?: string
 }
