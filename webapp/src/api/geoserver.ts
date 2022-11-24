@@ -1,4 +1,4 @@
-import { useGlobalStore } from "@/stores/global";
+import { useGlobalStore } from '@/stores/global';
 
 export const geoserverREST = {
   baseUrl() {

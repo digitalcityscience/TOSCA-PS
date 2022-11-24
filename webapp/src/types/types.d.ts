@@ -1,5 +1,24 @@
 type Module = DefineComponent
 
+// MongoDB documents
+
+interface Masterplan {
+  _id?: string
+  title?: string
+  layerName?: string
+  created?: string
+}
+
+interface PublicReview {
+  _id?: string
+  masterplan?: string
+  layerName?: string
+  startDate?: string
+  endDate?: string
+}
+
+// Other types
+
 interface Alert {
   message: string;
   timestamp?: number;

@@ -2,11 +2,16 @@ import { defineStore } from 'pinia';
 import { ref, shallowRef } from 'vue';
 
 export const useGlobalStore = defineStore('global', () => {
-  let geoserverUrl: string = import.meta.env.VITE_GEOSERVER_URL;
+  let apiUrl: string = import.meta.env.VITE_API_URL || '';
+  if (!apiUrl.match(/\/$/)) {
+    apiUrl += '/'
+  }
+
+  let geoserverUrl: string = import.meta.env.VITE_GEOSERVER_URL || '';
   if (!geoserverUrl.match(/\/$/)) {
     geoserverUrl += '/'
   }
-  const geoserverBasicAuth = btoa(`${import.meta.env.VITE_GEOSERVER_USERNAME}:${import.meta.env.VITE_GEOSERVER_PASSWORD}`)
+  const geoserverBasicAuth = btoa(`${import.meta.env.VITE_GEOSERVER_USERNAME || ''}:${import.meta.env.VITE_GEOSERVER_PASSWORD || ''}`)
 
   const isLoading = ref(false);
   const activeModule = shallowRef<Module | null>(null);
@@ -27,6 +32,7 @@ export const useGlobalStore = defineStore('global', () => {
   };
 
   return {
+    apiUrl,
     geoserverUrl,
     geoserverBasicAuth,
     isLoading,
