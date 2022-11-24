@@ -32,6 +32,21 @@ services:
       - GEOSERVER_PASSWORD=geoserver
       - GRASS_DIR=/pywps-flask/grass
 
+  db:
+    image: mongo
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodata:/data/db
+
+  api:
+    build: ./api
+    image: tosca/api
+    ports:
+      - 3000:3000
+    environment:
+      - MONGO_CONNECTION_STRING=mongodb://db:27017
+
   webapp:
     build: https://github.com/digitalcityscience/TOSCA-vue.git#main
     image: tosca/webapp
@@ -39,6 +54,8 @@ services:
       - 80:80
 
 volumes:
+  mongodata:
+    driver: local
   geoserver_data:
     driver: local
   grass:
