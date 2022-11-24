@@ -1,0 +1,49 @@
+html {
+  height: 100%;
+}
+
+body {
+  width: 100%;
+  height: 100%;
+  font-size: 1.15rem;
+}
+
+body,
+#map {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+.card {
+  margin: 10px;
+  border: 0;
+  border-radius: 10px;
+}
+
+.card.card-border {
+  padding: 10px;
+}
+
+.card form {
+  margin-bottom: 0;
+}
+
+.validation-error {
+  color: #db0000;
+}
+
+.box-shadow {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.button {
+  padding: 8px 10px;
+  font-size: 16px;
+  text-align: center;
+  cursor: pointer;
+  outline: none;
+  border-radius: 20px;
+}
+
+#app {
+  height: 100%;
+}

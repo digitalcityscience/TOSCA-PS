@@ -48,7 +48,7 @@ services:
       - MONGO_CONNECTION_STRING=mongodb://db:27017
 
   webapp:
-    build: https://github.com/digitalcityscience/TOSCA-vue.git#main
+    build: ./webapp
     image: tosca/webapp
     ports:
       - 80:80
