@@ -11,27 +11,6 @@ services:
         source: geoserver_data
         target: /usr/share/geoserver/data_dir
 
-  wpsserver:
-    build: https://github.com/digitalcityscience/TOSCA-flask.git#main
-    image: tosca/wpsserver
-    ports:
-      - 5000:5000
-    volumes:
-      - type: volume
-        source: grass
-        target: /pywps-flask/grass
-      - type: volume
-        source: output
-        target: /pywps-flask/outputs
-      - type: volume
-        source: geoserver_data
-        target: /pywps-flask/geoserver_data_dir
-    environment:
-      - GEOSERVER_URL=http://geoserver:8080/
-      - GEOSERVER_USERNAME=admin
-      - GEOSERVER_PASSWORD=geoserver
-      - GRASS_DIR=/pywps-flask/grass
-
   db:
     image: mongo
     ports:
@@ -57,8 +36,4 @@ volumes:
   mongodata:
     driver: local
   geoserver_data:
-    driver: local
-  grass:
-    driver: local
-  output:
     driver: local
