@@ -2,7 +2,7 @@ import dotenv from 'dotenv'
 import express from 'express'
 import bodyParser from 'body-parser'
 import cors from 'cors'
-import { MongoClient } from 'mongodb'
+import { MongoClient, ObjectId } from 'mongodb'
 
 dotenv.config()
 
@@ -69,6 +69,17 @@ app.post('/publicreviews', jsonParser, async (req, res) => {
     endDate.setDate(endDate.getDate() + 30);
   } catch (err) {
     res.status(400).send(`Error parsing date: ${req.body.startDate}`)
+    return
+  }
+
+  // check that masterplan exists
+  try {
+    if (!await client.db(dbname).collection('masterplans').findOne(ObjectId(req.body.masterplan))) {
+      throw new Error()
+    }
+  } catch (err) {
+    res.status(404).send(`Error: masterplan with ID ${req.body.masterplan} not found`)
+    return
   }
 
   const document = {

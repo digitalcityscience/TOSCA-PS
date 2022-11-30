@@ -11,11 +11,15 @@ export const db = {
   },
 
   postMasterplan: async (body: Masterplan) => {
-    await fetch(`${db.baseUrl()}masterplans`, {
+    const response = await fetch(`${db.baseUrl()}masterplans`, {
       method: 'POST',
       body: JSON.stringify(body),
       headers: new Headers({ 'Content-Type': 'application/json' })
     })
+    if (!response.ok) {
+      const message = await response.text();
+      throw new Error(message);
+    }
   },
 
   getPublicReviews: async () => {
@@ -24,10 +28,14 @@ export const db = {
   },
 
   postPublicReview: async (body: PublicReview) => {
-    await fetch(`${db.baseUrl()}publicreviews`, {
+    const response = await fetch(`${db.baseUrl()}publicreviews`, {
       method: 'POST',
       body: JSON.stringify(body),
       headers: new Headers({ 'Content-Type': 'application/json' })
     })
+    if (!response.ok) {
+      const message = await response.text();
+      throw new Error(message);
+    }
   }
 }
