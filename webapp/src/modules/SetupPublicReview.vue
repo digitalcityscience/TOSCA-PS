@@ -14,7 +14,7 @@ const { pushAlert } = useAlertsStore();
 
 const masterplans = ref<Masterplan[]>([]);
 
-const publicReview = ref<PublicReview>({
+const newPublicReview = ref<PublicReview>({
   masterplan: '',
   startDate: ''
 });
@@ -36,13 +36,13 @@ const validate = () => {
     startDate: ''
   };
 
-  if (!publicReview.value.masterplan) {
+  if (!newPublicReview.value.masterplan) {
     errors.value.masterplan = 'Master plan must be specified.';
   }
 
-  if (!publicReview.value.startDate) {
+  if (!newPublicReview.value.startDate) {
     errors.value.startDate = 'Start date must be specified.';
-  } else if (isNaN(Date.parse(publicReview.value.startDate))) {
+  } else if (isNaN(Date.parse(newPublicReview.value.startDate))) {
     errors.value.startDate = 'Invalid date.';
   }
 
@@ -55,7 +55,7 @@ const submit = async () => {
   }
 
   try {
-    await db.postPublicReview(publicReview.value);
+    await db.postPublicReview(newPublicReview.value);
 
     pushAlert('Public review was created successfully.', 'success');
     exitModule();
@@ -69,18 +69,22 @@ const submit = async () => {
   <ModuleStep v-if="activeModuleStep === 0">
     <p>Fill in the form to set up a public review.</p>
     <fieldset>
-      <label for="publicReviewMasterplan">Master plan:</label>
       <div>
-        <select id="publicReviewMasterplan" v-model="publicReview.masterplan">
-          <option v-for="masterplan in masterplans" :key="masterplan._id" :value="masterplan._id">
-            {{ masterplan.title }} ({{ masterplan.molgId }})
-          </option>
-        </select>
+        <label for="newPublicReviewMasterplan">Master plan:</label>
+        <div>
+          <select id="newPublicReviewMasterplan" v-model="newPublicReview.masterplan">
+            <option v-for="masterplan in masterplans" :key="masterplan._id" :value="masterplan._id">
+              {{ masterplan.title }} ({{ masterplan.molgId }})
+            </option>
+          </select>
+        </div>
+        <div v-if="errors.masterplan" class="error">{{ errors.masterplan }}</div>
       </div>
-      <div v-if="errors.masterplan" class="error">{{ errors.masterplan }}</div>
-      <label for="publicReviewStartDate">Start date:</label>
-      <input type="text" id="publicReviewStartDate" v-model="publicReview.startDate" placeholder="YYYY-MM-DD" />
-      <div v-if="errors.startDate" class="error">{{ errors.startDate }}</div>
+      <div>
+        <label for="newPublicReviewStartDate">Start date:</label>
+        <input type="text" id="newPublicReviewStartDate" v-model="newPublicReview.startDate" placeholder="YYYY-MM-DD" />
+        <div v-if="errors.startDate" class="error">{{ errors.startDate }}</div>
+      </div>
     </fieldset>
     <template #actions>
       <ModuleButton class="primary" @click="submit()">Submit</ModuleButton>
@@ -90,6 +94,10 @@ const submit = async () => {
 </template>
 
 <style scoped>
+select {
+  max-width: 100%;
+}
+
 .error {
   font-size: 0.8rem;
   color: darkred;

@@ -39,8 +39,6 @@ app.post('/masterplans', jsonParser, async (req, res) => {
     created: new Date()
   }
 
-  console.log(document)
-
   try {
     await client.db(dbname).collection('masterplans').insertOne(document)
     res.status(204).send()
@@ -75,13 +73,10 @@ app.post('/publicreviews', jsonParser, async (req, res) => {
 
   const document = {
     masterplan: req.body.masterplan,
-    layerName: req.body.layerName,
     startDate,
     endDate,
     created: new Date()
   }
-
-  console.log(document)
 
   try {
     await client.db(dbname).collection('publicreviews').insertOne(document)
