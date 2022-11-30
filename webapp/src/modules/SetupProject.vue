@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { db } from '@/api/db';
+import { geoserverREST } from '@/api/geoserver';
 import { useAlertsStore } from '@/stores/alerts';
 import { useGlobalStore } from '@/stores/global';
 import ModuleButton from './shared/ModuleButton.vue';
@@ -11,6 +12,12 @@ const globalStore = useGlobalStore();
 const { exitModule } = globalStore;
 const { activeModuleStep } = storeToRefs(globalStore);
 const { pushAlert } = useAlertsStore();
+
+const availableLayers = ref<GS.Reference[]>([]);
+
+onMounted(async () => {
+  availableLayers.value = await geoserverREST.GetFeatureTypes('vector');
+});
 
 const newProject = ref<Masterplan>({
   title: '',
@@ -75,8 +82,14 @@ const submit = async () => {
         <div v-if="errors.molgId" class="error">{{ errors.molgId }}</div>
       </div>
       <div>
-        <label for="newProjectLayerName">Map layer name:</label>
-        <input type="text" id="newProjectLayerName" v-model="newProject.layerName" />
+        <label for="newProjectLayerName">Map layer:</label>
+        <div>
+          <select id="newProjectLayerName" v-model="newProject.layerName">
+            <option v-for="layer in availableLayers" :key="layer.name" :value="layer.name">
+              {{ layer.name }}
+            </option>
+          </select>
+        </div>
         <div v-if="errors.layerName" class="error">{{ errors.layerName }}</div>
       </div>
     </fieldset>
@@ -88,6 +101,10 @@ const submit = async () => {
 </template>
 
 <style scoped>
+select {
+  max-width: 100%;
+}
+
 .error {
   font-size: 0.8rem;
   color: darkred;
