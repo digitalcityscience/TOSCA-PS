@@ -82,7 +82,7 @@ const submit = async () => {
       </div>
       <div>
         <label for="newPublicReviewStartDate">Start date:</label>
-        <input type="text" id="newPublicReviewStartDate" v-model="newPublicReview.startDate" placeholder="YYYY-MM-DD" />
+        <input type="date" id="newPublicReviewStartDate" v-model="newPublicReview.startDate" />
         <div v-if="errors.startDate" class="error">{{ errors.startDate }}</div>
       </div>
     </fieldset>
