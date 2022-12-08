@@ -10,6 +10,8 @@ services:
       - type: volume
         source: geoserver_data
         target: /usr/share/geoserver/data_dir
+    environment:
+      - GEOSERVER_CSRF_DISABLED=true
 
   db:
     image: mongo
