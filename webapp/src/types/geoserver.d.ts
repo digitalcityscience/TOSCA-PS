@@ -15,6 +15,7 @@ declare namespace GS {
       name: string
       href: string
     }
+    enabled: boolean
     maxFeatures: number
     abstract: string
     nativeName: string

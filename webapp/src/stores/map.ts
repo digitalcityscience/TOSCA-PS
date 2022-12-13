@@ -15,12 +15,7 @@ const hot = L.tileLayer('https://tile-{s}.openstreetmap.fr/hot/{z}/{x}/{y}.png',
   attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors; Humanitarian map style by <a href="https://www.hotosm.org/">HOT</a>'
 });
 
-const baseLayers = {
-  'OSM Standard style': osm,
-  'OSM Humanitarian style': hot
-};
-
-const geoserverWorkspaces = ['raster', 'vector'];
+const geoserverWorkspaces = ['boundary', 'agri-forestry', 'infrastructure', 'UMP'];
 
 export const useMapStore = defineStore('map', () => {
   const globalStore = useGlobalStore();
@@ -28,6 +23,11 @@ export const useMapStore = defineStore('map', () => {
   const map = ref<L.Map>();
   const drawings = ref<L.FeatureGroup>();
   const legend = ref<L.Control.Legend>();
+  const baseLayers = ref<Record<string, L.Layer>>({
+    'OSM Standard style': osm,
+    'OSM Humanitarian style': hot
+  });
+  const overlayMaps = ref<Record<string, L.LayerGroup>>({});
 
   const initializeMap = (containerId: string, options: L.MapOptions) => {
     map.value = new L.Map(containerId, options);
@@ -38,14 +38,14 @@ export const useMapStore = defineStore('map', () => {
 
     map.value.on('overlayadd', (event: any) => {
       if (event.layer._layers) {
-        const layer = Object.values(event.layer._layers)[0]
+        const layer = Object.values(event.layer._layers)[0];
         legend.value?.toggleLegendForLayer(layer as L.TileLayer.WMS, true, event.name);
       }
     });
 
     map.value.on('overlayremove', (event: any) => {
       if (event.layer._layers) {
-        const layer = Object.values(event.layer._layers)[0]
+        const layer = Object.values(event.layer._layers)[0];
         legend.value?.toggleLegendForLayer(layer as L.TileLayer.WMS, false);
       }
     });
@@ -84,27 +84,31 @@ export const useMapStore = defineStore('map', () => {
       return;
     }
 
-    const overlayMaps: { [workspace: string]: { [layerName: string]: L.LayerGroup } } = {}
+    const groupedOverlays: { [workspace: string]: { [layerName: string]: L.LayerGroup } } = {};
 
     for (const workspace of geoserverWorkspaces) {
-      overlayMaps[workspace] =  {}
+      groupedOverlays[workspace] = {};
 
       // Raster layers
       const wmsLayers = await geoserverREST.GetWmsLayers(workspace);
 
       for (const wmsLayer of wmsLayers) {
         const wmsLayerInfo = await geoserverREST.GetWmsLayer(workspace, wmsLayer.name);
-        const layer = L.tileLayer.wms(
+
+        if (!wmsLayerInfo.enabled) {
+          continue;
+        }
+
+        const wms = L.tileLayer.wms(
           getWmsBaseUrl(workspace),
           {
             layers: wmsLayerInfo.name,
             format: 'image/png',
-            transparent: true,
-            maxZoom: 20,
-            minZoom: 1
+            transparent: true
           }
         );
-        overlayMaps[workspace][wmsLayerInfo.title] = L.layerGroup([layer])
+        overlayMaps.value[wmsLayerInfo.name] = L.layerGroup([wms]);
+        groupedOverlays[workspace][wmsLayerInfo.title] = L.layerGroup([wms]);
       }
 
       // Vector layers
@@ -112,21 +116,25 @@ export const useMapStore = defineStore('map', () => {
 
       for (const featureType of featureTypes) {
         const featureTypeInfo = await geoserverREST.GetFeatureType(workspace, featureType.name);
-        const layer = L.tileLayer.wms(
+
+        if (!featureTypeInfo.enabled) {
+          continue;
+        }
+
+        const wms = L.tileLayer.wms(
           getWmsBaseUrl(workspace),
           {
             layers: featureTypeInfo.name,
             format: 'image/png',
-            transparent: true,
-            maxZoom: 20,
-            minZoom: 1
+            transparent: true
           }
         );
-        overlayMaps[workspace][featureTypeInfo.title] = L.layerGroup([layer])
+        overlayMaps.value[featureTypeInfo.name] = L.layerGroup([wms]);
+        groupedOverlays[workspace][featureTypeInfo.title] = L.layerGroup([wms]);
       }
     }
 
-    L.control.groupedLayers(baseLayers, overlayMaps, { position: 'topright', collapsed: false }).addTo(map.value);
+    L.control.groupedLayers(baseLayers.value, groupedOverlays, { position: 'topright', collapsed: false }).addTo(map.value);
   };
 
   const getWmsBaseUrl = (workspace: string) => {
@@ -135,6 +143,8 @@ export const useMapStore = defineStore('map', () => {
 
   return {
     map,
+    baseLayers,
+    overlayMaps,
     drawings,
     initializeMap,
     initializeLayers
