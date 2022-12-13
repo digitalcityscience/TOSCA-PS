@@ -9,14 +9,14 @@ import ModuleButton from './shared/ModuleButton.vue';
 import ModuleStep from './shared/ModuleStep.vue';
 
 const globalStore = useGlobalStore();
-const { exitModule } = globalStore;
+const { geoserverDMPWorkspace, exitModule } = globalStore;
 const { activeModuleStep } = storeToRefs(globalStore);
 const { pushAlert } = useAlertsStore();
 
-const availableLayers = ref<GS.Reference[]>([]);
+const availableDMPs = ref<GS.Reference[]>([]);
 
 onMounted(async () => {
-  availableLayers.value = await geoserverREST.GetFeatureTypes('vector');
+  availableDMPs.value = await geoserverREST.GetFeatureTypes(geoserverDMPWorkspace);
 });
 
 const newProject = ref<Masterplan>({
@@ -45,8 +45,6 @@ const validate = () => {
   if (!newProject.value.layerName) {
     errors.value.layerName = 'Layer must be specified.';
   }
-
-  // TODO: validate layer through GeoServer API
 
   return !Object.values(errors.value).some(error => !!error);
 };
@@ -85,7 +83,7 @@ const submit = async () => {
         <label for="newProjectLayerName">Map layer:</label>
         <div>
           <select id="newProjectLayerName" v-model="newProject.layerName">
-            <option v-for="layer in availableLayers" :key="layer.name" :value="layer.name">
+            <option v-for="layer in availableDMPs" :key="layer.name" :value="layer.name">
               {{ layer.name }}
             </option>
           </select>

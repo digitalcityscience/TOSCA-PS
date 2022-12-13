@@ -10,7 +10,9 @@ const { activeModule } = storeToRefs(globalStore);
   <div id="dialog" className="flex-grow-1 card card-border box-shadow">
     <component v-if="activeModule" :is="activeModule"></component>
     <div v-else>
-      <small>No process is currently running. Launch a module or setting from the navigation bar at the top.</small>
+      <p>Welcome to our online platform for the collection of citizens' comments on proposed Detailed Master Plans (DMP) for the Palestinian Regions.</p>
+      <p>As a citizen, you can use this online platform, with the assistance of a local authority, to submit your questions, comments or objections, during the 30-day objection period of proposed DMPs.</p>
+      <p>To begin, please click on the “start submission“ button at the top bar of the screen.</p>
     </div>
   </div>
   <div className="card flex-row justify-content-center">

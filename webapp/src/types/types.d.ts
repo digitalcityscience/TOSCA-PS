@@ -12,10 +12,31 @@ interface Masterplan {
 
 interface PublicReview {
   _id?: string
-  masterplan?: string
+  masterplanId?: string
+  masterplan?: Masterplan[]
   layerName?: string
   startDate?: string
   endDate?: string
+}
+
+interface Person {
+  _id?: string
+  name?: string
+  lot?: string
+  neighborhood?: string
+  block?: string
+  street?: string
+  phone?: string
+  id?: string
+}
+
+interface Objection {
+  _id?: string
+  publicReviewId?: string
+  publicReview?: PublicReview
+  person?: Person
+  category?: string
+  comment?: string
 }
 
 // Other types

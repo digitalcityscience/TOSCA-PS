@@ -2,6 +2,7 @@
 import { useGlobalStore } from '@/stores/global';
 import SetupProject from '@/modules/SetupProject.vue';
 import SetupPublicReview from '@/modules/SetupPublicReview.vue';
+import CitizenSubmission from '@/modules/CitizenSubmission.vue';
 
 const { setActiveModule } = useGlobalStore();
 
@@ -15,32 +16,21 @@ const launch = (module: Module) => {
     <div class="navbar-brand fw-bold">TOSCA</div>
     <ul class="navbar-nav flex-grow-1 justify-content-space-evenly">
       <li class="nav-item d-flex align-items-center">
-        <span class="d-inline-block align-middle m-2">Modules</span>
-        <select defaultValue="time_map" id="launch-module-menu" class="form-select form-select-lg me-2">
-          <option value="time_map">Calculate time map</option>
-          <option value="query">Query area</option>
-        </select>
-        <button class="btn btn-success btn-lg me-2" @click="() => {}">▷&nbsp;Run</button>
-        <button class="btn btn-light btn-lg" id="result-btn" @click="$emit('openResults')">Results</button>
+        <button class="btn btn-success btn-lg me-2" @click="launch(CitizenSubmission)">Start submission</button>
       </li>
       <li class="nav-item flex-grow-1"></li>
       <li class="nav-item d-flex align-items-center">
         <div class=" dropdown">
           <a class="btn btn-light btn-lg dropdown-toggle" id="settings-menu" role="button" data-bs-toggle="dropdown">Settings</a>
-          <ul class="dropdown-menu" aria-labelledby="settings-menu">
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="settings-menu">
             <li>
               <a class="btn dropdown-item" @click="launch(SetupProject)">Set up project</a>
             </li>
             <li>
-              <a class="btn dropdown-item" @click="launch(SetupPublicReview)">Start public review</a>
+              <a class="btn dropdown-item" @click="launch(SetupPublicReview)">Set up public review</a>
             </li>
           </ul>
         </div>
-      </li>
-      <li class="nav-item">
-        <a class="btn btn-secondary btn-lg" href="https://github.com/digitalcityscience/TOSCA/wiki" target="_blank">
-          Help
-        </a>
       </li>
     </ul>
   </nav>

@@ -15,7 +15,7 @@ export const db = {
       method: 'POST',
       body: JSON.stringify(body),
       headers: new Headers({ 'Content-Type': 'application/json' })
-    })
+    });
     if (!response.ok) {
       const message = await response.text();
       throw new Error(message);
@@ -23,7 +23,7 @@ export const db = {
   },
 
   getPublicReviews: async () => {
-    const response = await fetch(`${db.baseUrl()}publicreviews`);
+    const response = await fetch(`${db.baseUrl()}publicreviews?valid=now`);
     return response;
   },
 
@@ -32,7 +32,19 @@ export const db = {
       method: 'POST',
       body: JSON.stringify(body),
       headers: new Headers({ 'Content-Type': 'application/json' })
-    })
+    });
+    if (!response.ok) {
+      const message = await response.text();
+      throw new Error(message);
+    }
+  },
+
+  postObjection: async (body: Objection, publicReviewId: string) => {
+    const response = await fetch(`${db.baseUrl()}publicreviews/${publicReviewId}/objections`, {
+      method: 'POST',
+      body: JSON.stringify(body),
+      headers: new Headers({ 'Content-Type': 'application/json' })
+    });
     if (!response.ok) {
       const message = await response.text();
       throw new Error(message);

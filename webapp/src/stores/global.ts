@@ -12,6 +12,7 @@ export const useGlobalStore = defineStore('global', () => {
     geoserverUrl += '/'
   }
   const geoserverBasicAuth = btoa(`${import.meta.env.VITE_GEOSERVER_USERNAME || ''}:${import.meta.env.VITE_GEOSERVER_PASSWORD || ''}`)
+  const geoserverDMPWorkspace = import.meta.env.VITE_GEOSERVER_DMP_WORKSPACE;
 
   const isLoading = ref(false);
   const activeModule = shallowRef<Module | null>(null);
@@ -35,6 +36,7 @@ export const useGlobalStore = defineStore('global', () => {
     apiUrl,
     geoserverUrl,
     geoserverBasicAuth,
+    geoserverDMPWorkspace,
     isLoading,
     activeModule,
     activeModuleStep,

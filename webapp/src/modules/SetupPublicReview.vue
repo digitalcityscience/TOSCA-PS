@@ -15,7 +15,7 @@ const { pushAlert } = useAlertsStore();
 const masterplans = ref<Masterplan[]>([]);
 
 const newPublicReview = ref<PublicReview>({
-  masterplan: '',
+  masterplanId: '',
   startDate: ''
 });
 
@@ -32,12 +32,12 @@ onMounted(async () => {
 
 const validate = () => {
   errors.value = {
-    masterplan: '',
+    masterplanId: '',
     startDate: ''
   };
 
-  if (!newPublicReview.value.masterplan) {
-    errors.value.masterplan = 'Master plan must be specified.';
+  if (!newPublicReview.value.masterplanId) {
+    errors.value.masterplanId = 'Master plan must be specified.';
   }
 
   if (!newPublicReview.value.startDate) {
@@ -72,13 +72,13 @@ const submit = async () => {
       <div>
         <label for="newPublicReviewMasterplan">Master plan:</label>
         <div>
-          <select id="newPublicReviewMasterplan" v-model="newPublicReview.masterplan">
+          <select id="newPublicReviewMasterplan" v-model="newPublicReview.masterplanId">
             <option v-for="masterplan in masterplans" :key="masterplan._id" :value="masterplan._id">
               {{ masterplan.title }} ({{ masterplan.molgId }})
             </option>
           </select>
         </div>
-        <div v-if="errors.masterplan" class="error">{{ errors.masterplan }}</div>
+        <div v-if="errors.masterplanId" class="error">{{ errors.masterplanId }}</div>
       </div>
       <div>
         <label for="newPublicReviewStartDate">Start date:</label>

@@ -11,7 +11,6 @@ declare module 'leaflet' {
       showGetFeatureInfo: (content: GeoJSON.FeatureCollection, latlng: L.LatLngExpression) => void
     }
   }
-
 }
 
 L.TileLayer.WMS.prototype.getFeatureInfoDisabled = false;
@@ -82,18 +81,13 @@ L.TileLayer.WMS.prototype.showGetFeatureInfo = function (content: GeoJSON.Featur
   }
   L.popup()
     .setLatLng(latlng)
-    .setContent(getTableHTML(content.features[0].properties, content.features[0].id))
+    .setContent(getTableHTML(content.features[0].properties))
     .openOn(this._map);
 }
 
-function getTableHTML(properties: GeoJsonProperties, name?: string | number) {
-  let html = `<div class="getFeatureClass"><p>${name}</p><div>`;
-
-  html += Object.entries(properties as object).filter(([k, v]) => k !== 'cat' && v).reduce((html, [k, v]) => {
+function getTableHTML(properties: GeoJsonProperties) {
+  return Object.entries(properties as object).filter(([k, v]) => k !== 'cat' && v).reduce((html, [k, v]) => {
     html += `<tr><td>${k}</td><td>${v}</td></tr>`;
     return html;
   }, `<table><tbody>`) + `</tbody></table>`;
-
-  html += `</div></div>`;
-  return html;
 }

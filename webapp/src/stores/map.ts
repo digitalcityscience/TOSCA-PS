@@ -18,7 +18,7 @@ const hot = L.tileLayer('https://tile-{s}.openstreetmap.fr/hot/{z}/{x}/{y}.png',
 const geoserverWorkspaces = ['boundary', 'agri-forestry', 'infrastructure', 'UMP'];
 
 export const useMapStore = defineStore('map', () => {
-  const globalStore = useGlobalStore();
+  const { geoserverUrl, geoserverDMPWorkspace } = useGlobalStore();
 
   const map = ref<L.Map>();
   const drawings = ref<L.FeatureGroup>();
@@ -27,7 +27,7 @@ export const useMapStore = defineStore('map', () => {
     'OSM Standard style': osm,
     'OSM Humanitarian style': hot
   });
-  const overlayMaps = ref<Record<string, L.LayerGroup>>({});
+  const overlayMaps = ref<Record<string, L.Layer>>({});
 
   const initializeMap = (containerId: string, options: L.MapOptions) => {
     map.value = new L.Map(containerId, options);
@@ -50,27 +50,27 @@ export const useMapStore = defineStore('map', () => {
       }
     });
 
-    /* Drawing tool */
-    drawings.value = L.featureGroup().addTo(map.value);
+    // /* Drawing tool */
+    // drawings.value = L.featureGroup().addTo(map.value);
 
-    map.value.addControl(new L.Control.Draw({
-      edit: {
-        featureGroup: drawings.value
-      },
-      draw: {
-        polygon: {
-          showArea: true
-        },
-        polyline: false,
-        rectangle: false,
-        circle: false,
-        marker: false
-      }
-    }));
+    // map.value.addControl(new L.Control.Draw({
+    //   edit: {
+    //     featureGroup: drawings.value
+    //   },
+    //   draw: {
+    //     polygon: {
+    //       showArea: true
+    //     },
+    //     polyline: false,
+    //     rectangle: false,
+    //     circle: false,
+    //     marker: false
+    //   }
+    // }));
 
-    map.value.on(L.Draw.Event.CREATED, event => {
-      drawings.value?.addLayer(event.layer);
-    });
+    // map.value.on(L.Draw.Event.CREATED, event => {
+    //   drawings.value?.addLayer(event.layer);
+    // });
 
     /* Scale bar */
     L.control.scale({ maxWidth: 300, position: 'bottomright' }).addTo(map.value);
@@ -84,62 +84,61 @@ export const useMapStore = defineStore('map', () => {
       return;
     }
 
-    const groupedOverlays: { [workspace: string]: { [layerName: string]: L.LayerGroup } } = {};
+    const layerControl = L.control.groupedLayers(baseLayers.value, {}, { position: 'topright', collapsed: false }).addTo(map.value);
 
     for (const workspace of geoserverWorkspaces) {
-      groupedOverlays[workspace] = {};
+      const layerInfos = [];
 
-      // Raster layers
-      const wmsLayers = await geoserverREST.GetWmsLayers(workspace);
+      for (const layer of await geoserverREST.GetWmsLayers(workspace)) {
+        layerInfos.push(await geoserverREST.GetWmsLayer(workspace, layer.name));
+      }
 
-      for (const wmsLayer of wmsLayers) {
-        const wmsLayerInfo = await geoserverREST.GetWmsLayer(workspace, wmsLayer.name);
+      for (const layer of await geoserverREST.GetFeatureTypes(workspace)) {
+        layerInfos.push(await geoserverREST.GetFeatureType(workspace, layer.name));
+      }
 
-        if (!wmsLayerInfo.enabled) {
+      for (const layerInfo of layerInfos) {
+        if (!layerInfo.enabled) {
           continue;
         }
 
-        const wms = L.tileLayer.wms(
-          getWmsBaseUrl(workspace),
-          {
-            layers: wmsLayerInfo.name,
-            format: 'image/png',
-            transparent: true
+        const wms = wmsToLayer(workspace, layerInfo);
+        overlayMaps.value[layerInfo.name] = wms;
+
+        layerControl.addOverlay(wms, layerInfo.title, workspace);
           }
-        );
-        overlayMaps.value[wmsLayerInfo.name] = L.layerGroup([wms]);
-        groupedOverlays[workspace][wmsLayerInfo.title] = L.layerGroup([wms]);
       }
 
-      // Vector layers
-      const featureTypes = await geoserverREST.GetFeatureTypes(workspace);
+    // special handling for DMP layers (not added to layer control)
 
-      for (const featureType of featureTypes) {
-        const featureTypeInfo = await geoserverREST.GetFeatureType(workspace, featureType.name);
+    for (const layer of await geoserverREST.GetFeatureTypes(geoserverDMPWorkspace)) {
+      const layerInfo = await geoserverREST.GetFeatureType(geoserverDMPWorkspace, layer.name);
 
-        if (!featureTypeInfo.enabled) {
+      if (!layerInfo.enabled) {
           continue;
         }
 
-        const wms = L.tileLayer.wms(
-          getWmsBaseUrl(workspace),
-          {
-            layers: featureTypeInfo.name,
-            format: 'image/png',
-            transparent: true
-          }
-        );
-        overlayMaps.value[featureTypeInfo.name] = L.layerGroup([wms]);
-        groupedOverlays[workspace][featureTypeInfo.title] = L.layerGroup([wms]);
-      }
+      const wms = wmsToLayer(geoserverDMPWorkspace, layerInfo);
+      overlayMaps.value[layerInfo.name] = wms;
+
+      wms.addTo(map.value);
     }
+  };
 
-    L.control.groupedLayers(baseLayers.value, groupedOverlays, { position: 'topright', collapsed: false }).addTo(map.value);
+  const wmsToLayer = (workspace: string, layerInfo: GS.WMSLayerInfo | GS.FeatureTypeInfo) => {
+    return L.tileLayer.wms(
+          getWmsBaseUrl(workspace),
+          {
+        layers: layerInfo.name,
+            format: 'image/png',
+            transparent: true
+          }
+        );
   };
 
   const getWmsBaseUrl = (workspace: string) => {
-    return `${globalStore.geoserverUrl}${workspace}/wms`;
-  }
+    return `${geoserverUrl}${workspace}/wms`;
+  };
 
   return {
     map,

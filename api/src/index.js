@@ -15,8 +15,8 @@ const client = new MongoClient(process.env.MONGO_CONNECTION_STRING)
 const dbname = 'molg_data'
 
 app.get('/', async (req, res) => {
-  res.send('TOSCA API');
-});
+  res.send('TOSCA API')
+})
 
 app.get('/masterplans', async (req, res) => {
   await client.connect()
@@ -50,8 +50,31 @@ app.post('/masterplans', jsonParser, async (req, res) => {
 app.get('/publicreviews', async (req, res) => {
   await client.connect()
 
+  let query = {}
+
+  if (req.query.valid === 'now') {
+    const now = new Date()
+
+    query = {
+      startDate: { $lt: now },
+      endDate: { $gt: now }
+    }
+  }
+
   try {
-    const result = await client.db(dbname).collection('publicreviews').find({}).toArray()
+    const result = await client.db(dbname).collection('publicreviews')
+      .aggregate([
+        { $match: query },
+        {
+          $lookup: {
+            from: 'masterplans',
+            localField: 'masterplanId',
+            foreignField: '_id',
+            as: 'masterplan'
+          }
+        }
+      ])
+      .toArray()
     res.json(result)
   } catch (err) {
     res.status(400).send('Error fetching public reviews')
@@ -74,16 +97,16 @@ app.post('/publicreviews', jsonParser, async (req, res) => {
 
   // check that masterplan exists
   try {
-    if (!await client.db(dbname).collection('masterplans').findOne(ObjectId(req.body.masterplan))) {
+    if (!await client.db(dbname).collection('masterplans').findOne({ _id: ObjectId(req.body.masterplanId) })) {
       throw new Error()
     }
   } catch (err) {
-    res.status(404).send(`Error: masterplan with ID ${req.body.masterplan} not found`)
+    res.status(404).send(`Error: masterplan with ID ${req.body.masterplanId} not found`)
     return
   }
 
   const document = {
-    masterplan: req.body.masterplan,
+    masterplanId: ObjectId(req.body.masterplanId),
     startDate,
     endDate,
     created: new Date()
@@ -102,7 +125,7 @@ app.get('/publicreviews/:id/objections', async (req, res) => {
 
   try {
     const result = await client.db(dbname).collection('objections').find({
-      publicReview: req.params.id
+      publicReviewId: ObjectId(req.params.id)
     }).toArray()
     res.json(result)
   } catch (err) {
@@ -115,19 +138,19 @@ app.post('/publicreviews/:id/objections', jsonParser, async (req, res) => {
 
   // check that public review exists
   try {
-    if (!await client.db(dbname).collection('publicreviews').findOne(ObjectId(req.body.publicReview))) {
+    if (!await client.db(dbname).collection('publicreviews').findOne({ _id: ObjectId(req.params.id) })) {
       throw new Error()
     }
   } catch (err) {
-    res.status(404).send(`Error: public review with ID ${req.body.publicReview} not found`)
+    res.status(404).send(`Error: public review with ID ${req.params.id} not found`)
     return
   }
 
   const document = {
-    publicReview: req.body.publicReview,
-    text: req.body.text,
-    author: req.body.author,
-    coordinate: req.body.coordinate,
+    publicReviewId: ObjectId(req.params.id),
+    person: req.body.person,
+    category: req.body.category,
+    comment: req.body.comment,
     created: new Date()
   }
 

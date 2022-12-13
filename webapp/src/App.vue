@@ -21,7 +21,7 @@ const showResultsModal = ref(false);
       <TheNavbar @openResults="showResultsModal = true" />
     </header>
     <main class="d-flex flex-grow-1 main">
-      <div id="sidebar" class="d-flex flex-column w-25 sidebar">
+      <div id="sidebar" class="d-flex flex-column sidebar">
         <TheSidebar />
       </div>
       <div id="map-container" class="col card box-shadow">
@@ -35,6 +35,11 @@ const showResultsModal = ref(false);
 </template>
 
 <style scoped>
+.sidebar {
+  width: 30%;
+  min-width: 450px;
+}
+
 #map-container {
   padding: 0;
   position: relative;
