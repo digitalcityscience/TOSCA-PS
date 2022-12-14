@@ -2,7 +2,7 @@
 import { storeToRefs } from 'pinia';
 import { onMounted, ref } from 'vue';
 import { db } from '@/api/db';
-import { geoserverREST } from '@/api/geoserver';
+import { geoserver } from '@/api/geoserver';
 import { useAlertsStore } from '@/stores/alerts';
 import { useGlobalStore } from '@/stores/global';
 import ModuleButton from './shared/ModuleButton.vue';
@@ -16,7 +16,7 @@ const { pushAlert } = useAlertsStore();
 const availableDMPs = ref<GS.Reference[]>([]);
 
 onMounted(async () => {
-  availableDMPs.value = await geoserverREST.GetFeatureTypes(geoserverDMPWorkspace);
+  availableDMPs.value = await geoserver.GetFeatureTypes(geoserverDMPWorkspace);
 });
 
 const newProject = ref<Masterplan>({

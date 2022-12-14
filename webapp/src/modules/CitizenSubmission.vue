@@ -2,6 +2,7 @@
 import { storeToRefs } from 'pinia';
 import { onMounted, ref } from 'vue';
 import { db } from '@/api/db';
+import { geoserver } from '@/api/geoserver';
 import { useAlertsStore } from '@/stores/alerts';
 import { useGlobalStore } from '@/stores/global';
 import { useMapStore } from '@/stores/map';
@@ -23,6 +24,8 @@ onMounted(async () => {
     const response = await db.getPublicReviews();
     publicReviews.value = await response.json();
 
+    console.log(publicReviews.value);
+
     for (const review of publicReviews.value) {
       const layerName = review.masterplan?.[0].layerName;
       if (!layerName) {
@@ -30,16 +33,16 @@ onMounted(async () => {
       }
 
       const layer = overlayMaps.value[layerName] as L.TileLayer.WMS;
+
+      if (!layer) {
+        continue;
+      }
       layer.bringToFront();
 
       map.value?.on('click', async event => {
         const url = layer.getFeatureInfoUrl(event.latlng);
         if (url) {
-          const response = await fetch(url, {
-            headers: new Headers({
-              'Authorization': `Basic ${globalStore.geoserverBasicAuth}`
-            })
-          });
+          const response = await geoserver.fetchWithCredentials(url);
           const data = await response.json();
 
           if (data.features.length > 0) {

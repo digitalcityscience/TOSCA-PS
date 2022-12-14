@@ -5,7 +5,7 @@ import '@/leaflet-plugins/leaflet.legend';
 import '@/leaflet-plugins/leaflet.getfeatureinfo';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import { geoserverREST } from '@/api/geoserver';
+import { geoserver } from '@/api/geoserver';
 import { useGlobalStore } from './global';
 
 const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -89,12 +89,12 @@ export const useMapStore = defineStore('map', () => {
     for (const workspace of geoserverWorkspaces) {
       const layerInfos = [];
 
-      for (const layer of await geoserverREST.GetWmsLayers(workspace)) {
-        layerInfos.push(await geoserverREST.GetWmsLayer(workspace, layer.name));
+      for (const layer of await geoserver.GetWmsLayers(workspace)) {
+        layerInfos.push(await geoserver.GetWmsLayer(workspace, layer.name));
       }
 
-      for (const layer of await geoserverREST.GetFeatureTypes(workspace)) {
-        layerInfos.push(await geoserverREST.GetFeatureType(workspace, layer.name));
+      for (const layer of await geoserver.GetFeatureTypes(workspace)) {
+        layerInfos.push(await geoserver.GetFeatureType(workspace, layer.name));
       }
 
       for (const layerInfo of layerInfos) {
@@ -106,17 +106,17 @@ export const useMapStore = defineStore('map', () => {
         overlayMaps.value[layerInfo.name] = wms;
 
         layerControl.addOverlay(wms, layerInfo.title, workspace);
-          }
       }
+    }
 
     // special handling for DMP layers (not added to layer control)
 
-    for (const layer of await geoserverREST.GetFeatureTypes(geoserverDMPWorkspace)) {
-      const layerInfo = await geoserverREST.GetFeatureType(geoserverDMPWorkspace, layer.name);
+    for (const layer of await geoserver.GetFeatureTypes(geoserverDMPWorkspace)) {
+      const layerInfo = await geoserver.GetFeatureType(geoserverDMPWorkspace, layer.name);
 
       if (!layerInfo.enabled) {
-          continue;
-        }
+        continue;
+      }
 
       const wms = wmsToLayer(geoserverDMPWorkspace, layerInfo);
       overlayMaps.value[layerInfo.name] = wms;
@@ -127,13 +127,13 @@ export const useMapStore = defineStore('map', () => {
 
   const wmsToLayer = (workspace: string, layerInfo: GS.WMSLayerInfo | GS.FeatureTypeInfo) => {
     return L.tileLayer.wms(
-          getWmsBaseUrl(workspace),
-          {
+      getWmsBaseUrl(workspace),
+      {
         layers: layerInfo.name,
-            format: 'image/png',
-            transparent: true
-          }
-        );
+        format: 'image/png',
+        transparent: true
+      }
+    );
   };
 
   const getWmsBaseUrl = (workspace: string) => {

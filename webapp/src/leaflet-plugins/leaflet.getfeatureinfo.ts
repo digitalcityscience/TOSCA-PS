@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import type { GeoJsonProperties } from 'geojson';
 import L from 'leaflet';
-import { useGlobalStore } from '@/stores/global';
+import { geoserver } from '@/api/geoserver';
 
 declare module 'leaflet' {
   namespace TileLayer {
@@ -40,11 +40,7 @@ L.TileLayer.WMS.prototype.getFeatureInfo = async function (evt: L.LeafletMouseEv
   if (!url) {
     return;
   }
-  const response = await fetch(url, {
-    headers: new Headers({
-      'Authorization': `Basic ${useGlobalStore().geoserverBasicAuth}`
-    })
-  });
+  const response = await geoserver.fetchWithCredentials(url);
   const data = await response.json();
 
   if (typeof data === 'object') {
