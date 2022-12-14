@@ -35,7 +35,11 @@ onMounted(async () => {
       map.value?.on('click', async event => {
         const url = layer.getFeatureInfoUrl(event.latlng);
         if (url) {
-          const response = await fetch(url);
+          const response = await fetch(url, {
+            headers: new Headers({
+              'Authorization': `Basic ${globalStore.geoserverBasicAuth}`
+            })
+          });
           const data = await response.json();
 
           if (data.features.length > 0) {
