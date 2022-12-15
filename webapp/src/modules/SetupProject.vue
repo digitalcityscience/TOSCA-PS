@@ -39,7 +39,7 @@ const validate = () => {
   }
 
   if (!newProject.value.molgId) {
-    errors.value.title = 'MoLG ID cannot be empty.';
+    errors.value.molgId = 'MoLG ID cannot be empty.';
   }
 
   if (!newProject.value.layerName) {
