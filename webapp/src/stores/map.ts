@@ -36,18 +36,12 @@ export const useMapStore = defineStore('map', () => {
     legend.value = L.control.legend({ position: 'bottomleft' });
     legend.value.addTo(map.value);
 
-    map.value.on('overlayadd', (event: any) => {
-      if (event.layer._layers) {
-        const layer = Object.values(event.layer._layers)[0];
-        legend.value?.toggleLegendForLayer(layer as L.TileLayer.WMS, true, event.name);
-      }
+    map.value.on('overlayadd', (event: L.LayerEvent & { name: string }) => {
+      legend.value?.toggleLegendForLayer(event.layer as L.TileLayer.WMS, true, event.name);
     });
 
-    map.value.on('overlayremove', (event: any) => {
-      if (event.layer._layers) {
-        const layer = Object.values(event.layer._layers)[0];
-        legend.value?.toggleLegendForLayer(layer as L.TileLayer.WMS, false);
-      }
+    map.value.on('overlayremove', (event: L.LayerEvent & { name: string }) => {
+      legend.value?.toggleLegendForLayer(event.layer as L.TileLayer.WMS, false);
     });
 
     // /* Drawing tool */
