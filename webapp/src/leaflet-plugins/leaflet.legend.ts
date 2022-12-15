@@ -17,9 +17,9 @@ L.Control.Legend = L.Control.extend({
   options: {},
 
   onAdd: function () {
-    const container = L.DomUtil.create('div'),
-      content = L.DomUtil.create('div'),
-      title = L.DomUtil.create('span');
+    const container = L.DomUtil.create('div');
+    const content = L.DomUtil.create('div');
+    const title = L.DomUtil.create('span');
 
     title.id = 'leaflet-legend-title';
     title.innerHTML = 'Map legend';
@@ -36,6 +36,10 @@ L.Control.Legend = L.Control.extend({
     const elementID = 'legend_' + layer.wmsParams.layers;
 
     if (checked) {
+      if (content?.lastChild) {
+        content?.removeChild(content.lastChild);
+      }
+
       const div = L.DomUtil.create('div');
       div.id = elementID;
       div.className = 'leaflet-legend-item';
