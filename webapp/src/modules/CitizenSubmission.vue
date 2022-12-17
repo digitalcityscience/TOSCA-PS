@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
-import { onMounted, ref } from 'vue';
+import { onBeforeUnmount, onMounted, ref } from 'vue';
 import { db } from '@/api/db';
 import { geoserver } from '@/api/geoserver';
 import { useAlertsStore } from '@/stores/alerts';
@@ -10,11 +10,12 @@ import ModuleButton from './shared/ModuleButton.vue';
 import ModuleStep from './shared/ModuleStep.vue';
 
 const globalStore = useGlobalStore();
-const { exitModule } = globalStore;
 const { activeModuleStep } = storeToRefs(globalStore);
+const { exitModule } = globalStore;
 const { pushAlert } = useAlertsStore();
 const mapStore = useMapStore();
-const { map, overlayMaps } = storeToRefs(mapStore);
+const { map, dmps } = storeToRefs(mapStore);
+const { addDMP, clearDMPs } = mapStore;
 
 const publicReviews = ref<PublicReview[]>([]);
 const selectedPublicReview = ref<PublicReview>();
@@ -32,31 +33,41 @@ onMounted(async () => {
         continue;
       }
 
-      const layer = overlayMaps.value[layerName] as L.TileLayer.WMS;
+      try {
+        const layer = await addDMP(layerName);
+        layer.bringToFront();
 
-      if (!layer) {
-        continue;
-      }
-      layer.bringToFront();
+        map.value?.on('click', async event => {
+          // request GetFeatureInfo to check if a feature of this layer was clicked
+          const url = layer.getFeatureInfoUrl(event.latlng);
+          if (url) {
+            const response = await geoserver.fetchWithCredentials(url);
+            const data = await response.json();
 
-      map.value?.on('click', async event => {
-        const url = layer.getFeatureInfoUrl(event.latlng);
-        if (url) {
-          const response = await geoserver.fetchWithCredentials(url);
-          const data = await response.json();
-
-          if (data.features.length > 0) {
-            selectedPublicReview.value = review;
-            errors.value.publicReviewId = '';
-          } else {
-            selectedPublicReview.value = undefined;
+            if (data.features.length > 0) {
+              selectedPublicReview.value = review;
+              errors.value.publicReviewId = '';
+            } else {
+              selectedPublicReview.value = undefined;
+            }
           }
-        }
-      }, layer);
+        }, layer);
+      } catch (err) {
+        pushAlert(`Layer "${layerName}" not found.`);
+      }
     }
+
+    if (!map.value) {
+      return;
+    }
+    dmps.value?.addTo(map.value as L.Map);
   } catch (err) {
     pushAlert((err as Error).message, 'danger');
   }
+});
+
+onBeforeUnmount(() => {
+  clearDMPs();
 });
 
 const objection = ref<Objection>({

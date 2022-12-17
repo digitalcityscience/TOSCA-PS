@@ -20,6 +20,7 @@ const onAdd = L.TileLayer.WMS.prototype.onAdd;
 
 L.TileLayer.WMS.prototype.onAdd = function (map) {
   onAdd.call(this, map);
+  this.bindPopup('', { autoClose: false });
   map.on('click', this.getFeatureInfo, this);
   return this;
 };
@@ -80,10 +81,8 @@ L.TileLayer.WMS.prototype.showGetFeatureInfo = function (content: GeoJSON.Featur
   if (content.features.length === 0) {
     return;
   }
-  L.popup()
-    .setLatLng(latlng)
-    .setContent(getTableHTML(content.features[0].properties))
-    .openOn(this._map);
+  this.setPopupContent(getTableHTML(content.features[0].properties));
+  this.openPopup(latlng);
 }
 
 function getTableHTML(properties: GeoJsonProperties) {

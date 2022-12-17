@@ -28,6 +28,7 @@ export const useMapStore = defineStore('map', () => {
     'OSM Humanitarian style': hot
   });
   const overlayMaps = ref<Record<string, L.Layer>>({});
+  const dmps = ref<L.LayerGroup>();
 
   const initializeMap = (containerId: string, options: L.MapOptions) => {
     map.value = new L.Map(containerId, options);
@@ -103,20 +104,20 @@ export const useMapStore = defineStore('map', () => {
       }
     }
 
-    // special handling for DMP layers (not added to layer control)
+    dmps.value = L.layerGroup();
+  }
 
-    for (const layer of await geoserver.GetFeatureTypes(geoserverDMPWorkspace)) {
-      const layerInfo = await geoserver.GetFeatureType(geoserverDMPWorkspace, layer.name);
+  const addDMP = async (layerName: string) => {
+    const layerInfo = await geoserver.GetFeatureType(geoserverDMPWorkspace, layerName);
+    const layer = wmsToLayer(geoserverDMPWorkspace, layerInfo);
 
-      if (!layerInfo.enabled) {
-        continue;
-      }
+    dmps.value?.addLayer(layer);
 
-      const wms = wmsToLayer(geoserverDMPWorkspace, layerInfo);
-      overlayMaps.value[layerInfo.name] = wms;
+    return layer;
+  };
 
-      wms.addTo(map.value);
-    }
+  const clearDMPs = () => {
+    dmps.value?.clearLayers();
   };
 
   const wmsToLayer = (workspace: string, layerInfo: GS.WMSLayerInfo | GS.FeatureTypeInfo) => {
@@ -138,8 +139,11 @@ export const useMapStore = defineStore('map', () => {
     map,
     baseLayers,
     overlayMaps,
+    dmps,
     drawings,
     initializeMap,
-    initializeLayers
+    initializeLayers,
+    addDMP,
+    clearDMPs
   };
 })
