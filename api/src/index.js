@@ -162,6 +162,13 @@ app.post('/publicreviews/:id/objections', jsonParser, async (req, res) => {
   }
 })
 
+app.delete('/', async (req, res) => {
+  await client.connect()
+
+  client.db(dbname).collection('masterplans').deleteMany({})
+  client.db(dbname).collection('publicreviews').deleteMany({})
+})
+
 
 // start listening
 app.listen(port, () => {
