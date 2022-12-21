@@ -27,7 +27,7 @@ const launch = (module: Module) => {
               <a class="btn dropdown-item" @click="launch(SetupProject)">Set up project</a>
             </li>
             <li>
-              <a class="btn dropdown-item" @click="launch(SetupPublicReview)">Set up public review</a>
+              <a class="btn dropdown-item" @click="launch(SetupPublicReview)">Publish project for review</a>
             </li>
           </ul>
         </div>
