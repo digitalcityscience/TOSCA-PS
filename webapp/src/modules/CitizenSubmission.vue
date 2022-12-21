@@ -35,6 +35,8 @@ onMounted(async () => {
 
       try {
         const layer = await addDMP(layerName);
+
+        map.value?.addLayer(layer);
         layer.bringToFront();
 
         map.value?.on('click', async event => {
