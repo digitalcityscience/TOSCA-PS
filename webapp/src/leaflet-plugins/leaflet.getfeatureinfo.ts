@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-namespace */
-import type { GeoJsonProperties } from 'geojson';
 import L from 'leaflet';
 import { geoserver } from '@/api/geoserver';
 
 declare module 'leaflet' {
   namespace TileLayer {
     interface WMS {
+      getFeatureInfoAttributes?: string[];
       getFeatureInfoDisabled: boolean
       getFeatureInfo: (evt: L.LeafletMouseEvent) => void
       getFeatureInfoUrl: (latlng: L.LatLngExpression) => string | undefined
@@ -81,13 +81,13 @@ L.TileLayer.WMS.prototype.showGetFeatureInfo = function (content: GeoJSON.Featur
   if (content.features.length === 0) {
     return;
   }
-  this.setPopupContent(getTableHTML(content.features[0].properties));
-  this.openPopup(latlng);
-}
-
-function getTableHTML(properties: GeoJsonProperties) {
-  return Object.entries(properties as object).filter(([k, v]) => k !== 'cat' && v).reduce((html, [k, v]) => {
-    html += `<tr><td>${k}</td><td>${v}</td></tr>`;
+  const html = Object.entries(content.features[0].properties as object).filter(([k, v]) => k !== 'cat' && v).reduce((html, [k, v]) => {
+    if (!this.getFeatureInfoAttributes || this.getFeatureInfoAttributes.includes(k)) {
+      html += `<tr><td>${k}</td><td>${v}</td></tr>`;
+    }
     return html;
-  }, `<table><tbody>`) + `</tbody></table>`;
+  }, `<table class="getfeatureinfo-popup"><tbody>`) + `</tbody></table>`;
+
+  this.setPopupContent(html);
+  this.openPopup(latlng);
 }

@@ -17,6 +17,20 @@ const hot = L.tileLayer('https://tile-{s}.openstreetmap.fr/hot/{z}/{x}/{y}.png',
 
 const geoserverWorkspaces = ['boundary', 'agri-forestry', 'infrastructure', 'UMP'];
 
+const getFeatureInfoAttributes: Record<string, string[]> = {
+  'Area_ABC': ['LandClas_1', 'LandClas_3'],
+  'Communities_LGUBoundaries': ['LayerName1', 'Communit_1', 'Governor_1', 'Ref_C_MOLG'],
+  'Parcels_04': ['ParcelNum', 'BlockNumbe', 'Communit_1', 'Governor_1', 'AreaText_A', 'AreaText_E', 'Registra_2', 'Registra_3'],
+  'Landscape': ['Landscap_1', 'DESCRIPTIO'],
+  'NaturalReserve': ['NaturalR_1', 'SiteName_E'],
+  'A1_1_UMPs_Approved': ['LandUse_Ar', 'Status_Ara', 'ApprovalDa']
+};
+
+const getFeatureInfoDisabled: Record<string, boolean> = {
+  'AgriculturalLandClassification': true,
+  'Roads_MOT': true
+};
+
 export const useMapStore = defineStore('map', () => {
   const { geoserverUrl, geoserverDMPWorkspace } = useGlobalStore();
 
@@ -121,7 +135,7 @@ export const useMapStore = defineStore('map', () => {
   };
 
   const wmsToLayer = (workspace: string, layerInfo: GS.WMSLayerInfo | GS.FeatureTypeInfo) => {
-    return L.tileLayer.wms(
+    const wms = L.tileLayer.wms(
       getWmsBaseUrl(workspace),
       {
         layers: layerInfo.name,
@@ -129,6 +143,13 @@ export const useMapStore = defineStore('map', () => {
         transparent: true
       }
     );
+    if (getFeatureInfoDisabled[layerInfo.name]) {
+      wms.getFeatureInfoDisabled = true;
+    }
+    if (getFeatureInfoAttributes[layerInfo.name]) {
+      wms.getFeatureInfoAttributes = getFeatureInfoAttributes[layerInfo.name];
+    }
+    return wms;
   };
 
   const getWmsBaseUrl = (workspace: string) => {

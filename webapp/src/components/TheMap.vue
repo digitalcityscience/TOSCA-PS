@@ -120,44 +120,13 @@ onMounted(() => {
     padding: 10px 10px
   }
 
-  .getFeatureClass {
-    width: 300px;
-
-    table {
-      justify-content: center;
-      align-items: center;
-      width: 100%
-    }
-
-    div {
-      overflow: auto;
-      max-height: 250px;
-    }
-
-    tbody {
-      position: relative;
-      align-items: stretch;
-    }
-
-    tr {
-      border: 1px solid black;
-      word-break: break-word;
-      white-space: pre-line;
-    }
-
+  .getfeatureinfo-popup {
     td {
-      padding: 5px;
-
+      padding: 4px;
     }
 
-    tr td:first-of-type {
-      font-weight: bold;
-      border: 1px solid black;
-      width: 50%;
-    }
-
-    p {
-      font-weight: bold;
+    td:first-of-type {
+      padding-right: 10px;
     }
   }
 }
