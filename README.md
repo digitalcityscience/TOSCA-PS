@@ -15,7 +15,7 @@ TOSCA is a framework connecting several external tools in order to implement a f
 1. GeoServer
 1. GRASS GIS
 1. enscript + ghostscript
-1. Node.js
+1. Vue.js
 
 The following instructions provide guidance for the installation of all required components.
 
