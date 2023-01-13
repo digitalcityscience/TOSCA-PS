@@ -78,6 +78,20 @@ const errors = ref<Partial<Record<keyof Objection, string>>>({});
 
 const personErrors = ref<Partial<Record<keyof Person, string>>>({});
 
+const fileData = ref<FormData>();
+
+const onFileInputChange = (event: Event) => {
+  const fieldName = (event.target as HTMLInputElement).name;
+  const fileList = (event.target as HTMLInputElement).files;
+
+  if (!fileList?.length) {
+    return;
+  }
+
+  fileData.value = new FormData();
+  fileData.value.append(fieldName, fileList[0]);
+}
+
 const submit = async (step: number) => {
   errors.value = {};
   personErrors.value = {};
@@ -110,7 +124,17 @@ const submit = async (step: number) => {
       throw new Error('selectedPublicReview is undefined');
     }
 
-    await db.postObjection(objection.value, selectedPublicReview.value._id);
+    const response = await db.postObjection(objection.value, selectedPublicReview.value._id);
+    const objectionId = (await response.json()).insertedId;
+
+    // upload attachment
+    if (fileData.value) {
+      try {
+        await db.postAttachment(fileData.value, objectionId);
+      } catch (err) {
+        throw new Error('Failed to upload file');
+      }
+    }
 
     pushAlert('Comment was submitted successfully.', 'success');
     exitModule();
@@ -136,9 +160,12 @@ const submit = async (step: number) => {
     <p>Please fill out the following information:</p>
     <fieldset>
       <h1>Describe your comment</h1>
-      <div>
+      <div class="mb-3">
         <textarea v-model="objection.comment" rows="8" class="form-control"></textarea>
         <div v-if="errors.comment" class="error">{{ errors.comment }}</div>
+      </div>
+      <div>
+        <input id="attachment" type="file" name="attachment" class="form-control" @change="onFileInputChange($event)" />
       </div>
     </fieldset>
     <template #actions>

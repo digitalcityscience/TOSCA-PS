@@ -37,6 +37,7 @@ interface Objection {
   person?: Person
   category?: string
   comment?: string
+  attachmentId?: string
 }
 
 // Other types

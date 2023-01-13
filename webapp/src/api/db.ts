@@ -20,6 +20,7 @@ export const db = {
       const message = await response.text();
       throw new Error(message);
     }
+    return response;
   },
 
   getPublicReviews: async () => {
@@ -37,6 +38,7 @@ export const db = {
       const message = await response.text();
       throw new Error(message);
     }
+    return response;
   },
 
   postObjection: async (body: Objection, publicReviewId: string) => {
@@ -49,5 +51,18 @@ export const db = {
       const message = await response.text();
       throw new Error(message);
     }
+    return response;
+  },
+
+  postAttachment: async (formData: FormData, objectionId: string) => {
+    const response = await fetch(`${db.baseUrl()}objections/${objectionId}/attachments`, {
+      method: 'POST',
+      body: formData
+    });
+    if (!response.ok) {
+      const message = await response.text();
+      throw new Error(message);
+    }
+    return response;
   }
 }
