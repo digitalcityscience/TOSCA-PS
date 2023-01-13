@@ -25,8 +25,6 @@ onMounted(async () => {
     const response = await db.getPublicReviews();
     publicReviews.value = await response.json();
 
-    console.log(publicReviews.value);
-
     for (const review of publicReviews.value) {
       const layerName = review.masterplan?.[0].layerName;
       if (!layerName) {
@@ -133,23 +131,27 @@ const submit = async (step: number) => {
       <ModuleButton class="secondary" @click="exitModule()">Cancel</ModuleButton>
     </template>
   </ModuleStep>
+
   <ModuleStep v-if="activeModuleStep === 1">
     <p>Please fill out the following information:</p>
     <fieldset>
       <h1>Describe your comment</h1>
-      <textarea v-model="objection.comment"></textarea>
-      <div v-if="errors.comment" class="error">{{ errors.comment }}</div>
+      <div>
+        <textarea v-model="objection.comment" rows="8" class="form-control"></textarea>
+        <div v-if="errors.comment" class="error">{{ errors.comment }}</div>
+      </div>
     </fieldset>
     <template #actions>
       <ModuleButton class="primary" @click="submit(1)">Next</ModuleButton>
       <ModuleButton class="secondary" @click="exitModule()">Cancel</ModuleButton>
     </template>
   </ModuleStep>
+
   <ModuleStep v-if="activeModuleStep === 2">
     <p>Please fill out the following information:</p>
     <fieldset>
       <h1>Category of your comment</h1>
-      <select v-model="objection.category">
+      <select v-model="objection.category" class="form-select">
         <option>Suggest a new land use category</option>
         <option>Suggest a new street</option>
         <option>Project cancellation</option>
@@ -168,43 +170,44 @@ const submit = async (step: number) => {
       <ModuleButton class="secondary" @click="exitModule()">Cancel</ModuleButton>
     </template>
   </ModuleStep>
+
   <ModuleStep v-if="activeModuleStep === 3 && objection.person">
     <p>Please fill out the following information:</p>
     <fieldset>
       <h1>Complete your personal information</h1>
-      <div>
+      <div class="mb-3">
         <label for="name">Name of the objecting person</label>
-        <input type="text" id="name" v-model="objection.person.name" />
+        <input type="text" id="name" v-model="objection.person.name" class="form-control" />
         <div v-if="personErrors.name" class="error">{{ personErrors.name }}</div>
       </div>
-      <div>
+      <div class="mb-3">
         <label for="lot">Lot number</label>
-        <input type="text" id="lot" v-model="objection.person.lot" />
+        <input type="text" id="lot" v-model="objection.person.lot" class="form-control" />
         <div v-if="personErrors.lot" class="error">{{ personErrors.lot }}</div>
       </div>
-      <div>
+      <div class="mb-3">
         <label for="neighborhood">Neighborhood number</label>
-        <input type="text" id="neighborhood" v-model="objection.person.neighborhood" />
+        <input type="text" id="neighborhood" v-model="objection.person.neighborhood" class="form-control" />
         <div v-if="personErrors.neighborhood" class="error">{{ personErrors.neighborhood }}</div>
       </div>
-      <div>
+      <div class="mb-3">
         <label for="block">Block number</label>
-        <input type="text" id="block" v-model="objection.person.block" />
+        <input type="text" id="block" v-model="objection.person.block" class="form-control" />
         <div v-if="personErrors.block" class="error">{{ personErrors.block }}</div>
       </div>
-      <div>
+      <div class="mb-3">
         <label for="street">Street number</label>
-        <input type="text" id="street" v-model="objection.person.street" />
+        <input type="text" id="street" v-model="objection.person.street" class="form-control" />
         <div v-if="personErrors.street" class="error">{{ personErrors.street }}</div>
       </div>
-      <div>
+      <div class="mb-3">
         <label for="phone">Phone number</label>
-        <input type="tel" id="phone" v-model="objection.person.phone" />
+        <input type="tel" id="phone" v-model="objection.person.phone" class="form-control" />
         <div v-if="personErrors.phone" class="error">{{ personErrors.phone }}</div>
       </div>
-      <div>
+      <div class="mb-3">
         <label for="id">ID number</label>
-        <input type="text" id="id" v-model="objection.person.id" />
+        <input type="text" id="id" v-model="objection.person.id" class="form-control" />
         <div v-if="personErrors.id" class="error">{{ personErrors.id }}</div>
       </div>
     </fieldset>
@@ -214,6 +217,7 @@ const submit = async (step: number) => {
       <ModuleButton class="secondary" @click="exitModule()">Cancel</ModuleButton>
     </template>
   </ModuleStep>
+
   <ModuleStep v-if="activeModuleStep === 4">
     <p>Thank you for your participation!</p>
     <template #actions>
