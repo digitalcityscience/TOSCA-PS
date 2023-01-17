@@ -75,7 +75,7 @@ const objection = ref<Objection>({
 });
 
 const errors = ref<Partial<Record<keyof Objection, string>>>({});
-
+const attachmentError = ref<string>('');
 const personErrors = ref<Partial<Record<keyof Person, string>>>({});
 
 const fileData = ref<FormData>();
@@ -84,11 +84,26 @@ const onFileInputChange = (event: Event) => {
   const fieldName = (event.target as HTMLInputElement).name;
   const fileList = (event.target as HTMLInputElement).files;
 
+  attachmentError.value = '';
+
   if (!fileList?.length) {
+    fileData.value?.delete(fieldName);
     return;
   }
 
-  fileData.value = new FormData();
+  fileData.value?.forEach((file) => {
+    if ((file as File).name === fileList[0].name) {
+      attachmentError.value = 'Cannot upload multiple files with the same name';
+    }
+  });
+
+  if (attachmentError.value) {
+    return;
+  }
+
+  if (!fileData.value) {
+    fileData.value = new FormData();
+  }
   fileData.value.append(fieldName, fileList[0]);
 }
 
@@ -110,7 +125,8 @@ const submit = async (step: number) => {
   }
 
   if (Object.values(errors.value).some(error => !!error) ||
-    Object.values(personErrors.value).some(error => !!error)) {
+    Object.values(personErrors.value).some(error => !!error) ||
+    attachmentError.value) {
     return;
   }
 
@@ -127,8 +143,16 @@ const submit = async (step: number) => {
     const response = await db.postObjection(objection.value, selectedPublicReview.value._id);
     const objectionId = (await response.json()).insertedId;
 
-    // upload attachment
+    // upload attachments
     if (fileData.value) {
+      for (const i of '12345') {
+        const file = fileData.value.get('attachment' + i);
+        if (file) {
+          fileData.value.append('attachment', file);
+          fileData.value.delete('attachment' + i);
+        }
+      }
+
       try {
         await db.postAttachment(fileData.value, objectionId);
       } catch (err) {
@@ -165,7 +189,12 @@ const submit = async (step: number) => {
         <div v-if="errors.comment" class="error">{{ errors.comment }}</div>
       </div>
       <div>
-        <input id="attachment" type="file" name="attachment" class="form-control" @change="onFileInputChange($event)" />
+        <input type="file" name="attachment1" class="form-control mb-3" @change="onFileInputChange($event)" />
+        <input type="file" name="attachment2" class="form-control mb-3" @change="onFileInputChange($event)" />
+        <input type="file" name="attachment3" class="form-control mb-3" @change="onFileInputChange($event)" />
+        <input type="file" name="attachment4" class="form-control mb-3" @change="onFileInputChange($event)" />
+        <input type="file" name="attachment5" class="form-control mb-3" @change="onFileInputChange($event)" />
+        <div v-if="attachmentError" class="error">{{ attachmentError }}</div>
       </div>
     </fieldset>
     <template #actions>

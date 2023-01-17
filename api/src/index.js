@@ -150,12 +150,14 @@ app.post('/publicreviews/:id/objections', jsonParser, async (req, res) => {
   }
 })
 
-app.post('/objections/:id/attachments', uploadParser.single('attachment'), async (req, res) => {
+app.post('/objections/:id/attachments', uploadParser.array('attachment'), async (req, res) => {
   try {
-    await db.collection('objections').updateOne(
-      { _id: ObjectId(req.params.id) },
-      { $set: { attachmentId: req.file.id } }
-    )
+    for (const file of req.files) {
+      await db.collection('objections').updateOne(
+        { _id: ObjectId(req.params.id) },
+        { $set: { attachmentId: file.id } }
+      )
+    }
   } catch (err) {
     res.status(404).send(`Error: objection with ID ${req.params.id} not found`)
     return
