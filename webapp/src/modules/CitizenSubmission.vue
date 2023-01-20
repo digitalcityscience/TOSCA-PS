@@ -14,7 +14,7 @@ const { activeModuleStep } = storeToRefs(globalStore);
 const { exitModule } = globalStore;
 const { pushAlert } = useAlertsStore();
 const mapStore = useMapStore();
-const { map, dmps } = storeToRefs(mapStore);
+const { map, dmpLayerGroup } = storeToRefs(mapStore);
 const { addDMP, clearDMPs } = mapStore;
 
 const publicReviews = ref<PublicReview[]>([]);
@@ -32,7 +32,7 @@ onMounted(async () => {
       }
 
       try {
-        const layer = await addDMP(layerName);
+        const { layer, marker } = await addDMP(layerName);
 
         map.value?.addLayer(layer);
         layer.bringToFront();
@@ -52,6 +52,11 @@ onMounted(async () => {
             }
           }
         }, layer);
+
+        marker.on('click', () => {
+          selectedPublicReview.value = review;
+          errors.value.publicReviewId = '';
+        });
       } catch (err) {
         pushAlert(`Layer "${layerName}" not found.`);
       }
@@ -60,7 +65,7 @@ onMounted(async () => {
     if (!map.value) {
       return;
     }
-    dmps.value?.addTo(map.value as L.Map);
+    dmpLayerGroup.value?.addTo(map.value as L.Map);
   } catch (err) {
     pushAlert((err as Error).message, 'danger');
   }
@@ -173,6 +178,7 @@ const submit = async (step: number) => {
     <p>Find on the map the DMP for which you would like to submit a comment. You can do this by zooming and/or panning to move around the area.</p>
     <p>Click on an outlined area of a DMP where you would like to locate your comment.</p>
     <p>Once you have clicked over a DMP polygon shape, please click the “Next“ button below to continue.</p>
+    <div v-if="selectedPublicReview"><strong>You have chosen masterplan "{{ selectedPublicReview.masterplan?.[0].title }}".</strong></div>
     <div v-if="errors.publicReviewId" class="error">{{ errors.publicReviewId }}</div>
     <template #actions>
       <ModuleButton class="primary" @click="submit(0)">Next</ModuleButton>

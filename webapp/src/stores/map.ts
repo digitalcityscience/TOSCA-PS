@@ -42,7 +42,7 @@ export const useMapStore = defineStore('map', () => {
     'OSM Humanitarian style': hot
   });
   const overlayMaps = ref<Record<string, L.Layer>>({});
-  const dmps = ref<L.LayerGroup>();
+  const dmpLayerGroup = ref<L.LayerGroup>();
 
   const initializeMap = (containerId: string, options: L.MapOptions) => {
     map.value = new L.Map(containerId, options);
@@ -118,20 +118,27 @@ export const useMapStore = defineStore('map', () => {
       }
     }
 
-    dmps.value = L.layerGroup();
+    dmpLayerGroup.value = L.layerGroup();
   }
 
   const addDMP = async (layerName: string) => {
     const layerInfo = await geoserver.GetFeatureType(geoserverDMPWorkspace, layerName);
     const layer = wmsToLayer(geoserverDMPWorkspace, layerInfo);
+    const boundingBox = layerInfo.latLonBoundingBox;
 
-    dmps.value?.addLayer(layer);
+    (dmpLayerGroup.value as L.LayerGroup).addLayer(layer);
 
-    return layer;
+    // add marker
+    const marker = L.marker([
+      (boundingBox.miny + boundingBox.maxy) / 2,
+      (boundingBox.minx + boundingBox.maxx) / 2
+    ]).addTo(dmpLayerGroup.value as L.LayerGroup);
+
+    return { layer, marker };
   };
 
   const clearDMPs = () => {
-    dmps.value?.clearLayers();
+    (dmpLayerGroup.value as L.LayerGroup).clearLayers();
   };
 
   const wmsToLayer = (workspace: string, layerInfo: GS.WMSLayerInfo | GS.FeatureTypeInfo) => {
@@ -160,7 +167,7 @@ export const useMapStore = defineStore('map', () => {
     map,
     baseLayers,
     overlayMaps,
-    dmps,
+    dmpLayerGroup,
     drawings,
     initializeMap,
     initializeLayers,
