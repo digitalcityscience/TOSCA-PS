@@ -4,7 +4,8 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . .
-COPY ./node_modules/leaflet/dist/images/* public
+RUN mkdir -p public/assets/images
+RUN mv node_modules/leaflet/dist/images/* public/assets/images
 RUN npm run build
 
 # production stage
