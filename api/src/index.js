@@ -49,6 +49,28 @@ app.post('/masterplans', jsonParser, async (req, res) => {
   }
 })
 
+app.delete('/masterplans/:id', async (req, res) => {
+  try {
+    await db.collection('masterplans').findOne({ _id: ObjectId(req.params.id) })
+  } catch (err) {
+    res.status(404).send(`Error: masterplan with ID ${req.params.id} not found`)
+    return
+  }
+
+  // find associated public reviews and objections and delete them
+  const publicreviews = await db.collection('publicreviews').find({ masterplanId: ObjectId(req.params.id) }).toArray()
+
+  for (const publicreview of publicreviews) {
+    await db.collection('objections').deleteMany({ publicReviewId: publicreview._id })
+  }
+  await db.collection('publicreviews').deleteMany({ masterplanId: ObjectId(req.params.id) })
+
+  // delete the masterplan
+  await db.collection('masterplans').deleteOne({ _id: ObjectId(req.params.id) })
+
+  res.status(200).send()
+})
+
 app.get('/publicreviews', async (req, res) => {
   let query = {}
 
@@ -115,8 +137,6 @@ app.post('/publicreviews', jsonParser, async (req, res) => {
 })
 
 app.get('/publicreviews/:id/objections', async (req, res) => {
-  await client.connect()
-
   try {
     const result = await db.collection('objections').find({
       publicReviewId: ObjectId(req.params.id)
@@ -164,12 +184,6 @@ app.post('/objections/:id/attachments', uploadParser.array('attachment'), async 
   }
 
   res.status(201).send()
-})
-
-app.delete('/', async (req, res) => {
-  db.collection('masterplans').deleteMany({})
-  db.collection('publicreviews').deleteMany({})
-  db.collection('objections').deleteMany({})
 })
 
 
