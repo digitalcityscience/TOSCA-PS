@@ -25,8 +25,12 @@ onMounted(async () => {
     const response = await db.getPublicReviews();
     publicReviews.value = await response.json();
 
+    if (publicReviews.value.length === 0) {
+      pushAlert('No submissions are possible a the moment, as no projects are currently open for review.');
+    }
+
     for (const review of publicReviews.value) {
-      const layerName = review.masterplan?.[0].layerName;
+      const layerName = review.masterplan?.[0]?.layerName;
       if (!layerName) {
         continue;
       }

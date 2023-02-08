@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { useGlobalStore } from '@/stores/global';
+import CitizenSubmission from '@/modules/CitizenSubmission.vue';
+import DeleteProject from '@/modules/DeleteProject.vue';
 import SetupProject from '@/modules/SetupProject.vue';
 import SetupPublicReview from '@/modules/SetupPublicReview.vue';
-import CitizenSubmission from '@/modules/CitizenSubmission.vue';
 
 const { setActiveModule } = useGlobalStore();
 
@@ -28,6 +29,9 @@ const launch = (module: Module) => {
             </li>
             <li>
               <a class="btn dropdown-item" @click="launch(SetupPublicReview)">Publish project for review</a>
+            </li>
+            <li>
+              <a class="btn dropdown-item" @click="launch(DeleteProject)">Delete project</a>
             </li>
           </ul>
         </div>

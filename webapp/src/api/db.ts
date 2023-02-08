@@ -23,6 +23,17 @@ export const db = {
     return response;
   },
 
+  deleteMasterplan: async (id: string) => {
+    const response = await fetch(`${db.baseUrl()}masterplans/${id}`, {
+      method: 'DELETE'
+    });
+    if (!response.ok) {
+      const message = await response.text();
+      throw new Error(message);
+    }
+    return response;
+  },
+
   getPublicReviews: async () => {
     const response = await fetch(`${db.baseUrl()}publicreviews?valid=now`);
     return response;
