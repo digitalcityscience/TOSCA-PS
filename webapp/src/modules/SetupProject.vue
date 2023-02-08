@@ -71,23 +71,21 @@ const submit = async () => {
     <fieldset>
       <div>
         <label for="newProjectTitle">Project title:</label>
-        <input type="text" id="newProjectTitle" v-model="newProject.title" />
+        <input type="text" id="newProjectTitle" v-model="newProject.title" class="form-control" />
         <div v-if="errors.title" class="error">{{ errors.title }}</div>
       </div>
       <div>
         <label for="newProjectMolgId">MoLG ID:</label>
-        <input type="text" id="newProjectMolgId" v-model="newProject.molgId" />
+        <input type="text" id="newProjectMolgId" v-model="newProject.molgId" class="form-control" />
         <div v-if="errors.molgId" class="error">{{ errors.molgId }}</div>
       </div>
       <div>
         <label for="newProjectLayerName">Map layer:</label>
-        <div>
-          <select id="newProjectLayerName" v-model="newProject.layerName">
-            <option v-for="layer in availableDMPs" :key="layer.name" :value="layer.name">
-              {{ layer.name }}
-            </option>
-          </select>
-        </div>
+        <select id="newProjectLayerName" v-model="newProject.layerName" class="form-select">
+          <option v-for="layer in availableDMPs" :key="layer.name" :value="layer.name">
+            {{ layer.name }}
+          </option>
+        </select>
         <div v-if="errors.layerName" class="error">{{ errors.layerName }}</div>
       </div>
     </fieldset>

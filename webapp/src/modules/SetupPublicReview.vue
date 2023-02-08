@@ -71,18 +71,16 @@ const submit = async () => {
     <fieldset>
       <div>
         <label for="newPublicReviewMasterplan">Master plan:</label>
-        <div>
-          <select id="newPublicReviewMasterplan" v-model="newPublicReview.masterplanId">
-            <option v-for="masterplan in masterplans" :key="masterplan._id" :value="masterplan._id">
-              {{ masterplan.title }} ({{ masterplan.molgId }})
-            </option>
-          </select>
-        </div>
+        <select id="newPublicReviewMasterplan" v-model="newPublicReview.masterplanId" class="form-select">
+          <option v-for="masterplan in masterplans" :key="masterplan._id" :value="masterplan._id">
+            {{ masterplan.title }} ({{ masterplan.molgId }})
+          </option>
+        </select>
         <div v-if="errors.masterplanId" class="error">{{ errors.masterplanId }}</div>
       </div>
       <div>
         <label for="newPublicReviewStartDate">Start date:</label>
-        <input type="date" id="newPublicReviewStartDate" v-model="newPublicReview.startDate" />
+        <input type="date" id="newPublicReviewStartDate" v-model="newPublicReview.startDate" class="form-control" />
         <div v-if="errors.startDate" class="error">{{ errors.startDate }}</div>
       </div>
     </fieldset>
