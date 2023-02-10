@@ -26,7 +26,7 @@ onMounted(async () => {
     publicReviews.value = await response.json();
 
     if (publicReviews.value.length === 0) {
-      pushAlert('No submissions are possible a the moment, as no projects are currently open for review.');
+      pushAlert('No submissions are possible a the moment, as no DMPs are currently open for review.');
     }
 
     for (const review of publicReviews.value) {

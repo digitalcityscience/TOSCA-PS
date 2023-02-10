@@ -34,7 +34,12 @@ const showResultsModal = ref(false);
   <ResultsModal v-if="showResultsModal" @close="showResultsModal = false" />
 </template>
 
-<style scoped>
+<style>
+h1 {
+  font-size: 120%;
+  font-weight: bold;
+}
+
 .sidebar {
   width: 30%;
   min-width: 450px;
@@ -59,13 +64,5 @@ const showResultsModal = ref(false);
 
 .alert .close {
   margin-left: 16px;
-}
-
-.tooltip {
-  font-size: 1rem;
-}
-
-.tooltip-inner {
-  max-width: 300px;
 }
 </style>

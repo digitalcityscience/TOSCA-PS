@@ -22,16 +22,16 @@ const launch = (module: Module) => {
       <li class="nav-item flex-grow-1"></li>
       <li class="nav-item d-flex align-items-center">
         <div class=" dropdown">
-          <a class="btn btn-light btn-lg dropdown-toggle" id="settings-menu" role="button" data-bs-toggle="dropdown">Settings</a>
+          <a class="btn btn-light btn-lg dropdown-toggle" id="settings-menu" role="button" data-bs-toggle="dropdown">Setup</a>
           <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="settings-menu">
             <li>
-              <a class="btn dropdown-item" @click="launch(SetupProject)">Set up project</a>
+              <a class="btn dropdown-item" @click="launch(SetupProject)">Set up a DMP</a>
             </li>
             <li>
-              <a class="btn dropdown-item" @click="launch(SetupPublicReview)">Publish project for review</a>
+              <a class="btn dropdown-item" @click="launch(SetupPublicReview)">Publish a DMP for review</a>
             </li>
             <li>
-              <a class="btn dropdown-item" @click="launch(DeleteProject)">Delete project</a>
+              <a class="btn dropdown-item" @click="launch(DeleteProject)">Delete a DMP</a>
             </li>
           </ul>
         </div>

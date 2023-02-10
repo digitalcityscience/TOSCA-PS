@@ -67,10 +67,11 @@ const submit = async () => {
 
 <template>
   <ModuleStep v-if="activeModuleStep === 0">
+    <h1>Setting up a DMP</h1>
     <p>Fill in the data about the new detailed master plan.</p>
     <fieldset>
       <div>
-        <label for="newProjectTitle">Project title:</label>
+        <label for="newProjectTitle">DMP title:</label>
         <input type="text" id="newProjectTitle" v-model="newProject.title" class="form-control" />
         <div v-if="errors.title" class="error">{{ errors.title }}</div>
       </div>
