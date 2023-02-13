@@ -15,15 +15,15 @@ const hot = L.tileLayer('https://tile-{s}.openstreetmap.fr/hot/{z}/{x}/{y}.png',
   attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors; Humanitarian map style by <a href="https://www.hotosm.org/">HOT</a>'
 });
 
-const geoserverWorkspaces = ['boundary', 'agri-forestry', 'infrastructure', 'UMP'];
+const geoserverWorkspaces = ['Boundaries', 'Agriculture-Forestry', 'Infrastructure', 'Detailed-Master-Plans'];
 
 const getFeatureInfoAttributes: Record<string, string[]> = {
   'Area_ABC': ['LandClas_1', 'LandClas_3'],
   'Communities_LGUBoundaries': ['LayerName1', 'Communit_1', 'Governor_1', 'Ref_C_MOLG'],
   'Parcels_04': ['ParcelNum', 'BlockNumbe', 'Communit_1', 'Governor_1', 'AreaText_A', 'AreaText_E', 'Registra_2', 'Registra_3'],
   'Landscape': ['Landscap_1', 'DESCRIPTIO'],
-  'NaturalReserve': ['NaturalR_1', 'SiteName_E'],
-  'A1_1_UMPs_Approved': ['LandUse_Ar', 'Status_Ara', 'ApprovalDa']
+  'Natural Reserve': ['NaturalR_1', 'SiteName_E'],
+  'DMP (approved)': ['LandUse_Ar', 'Status_Ara', 'ApprovalDa']
 };
 
 const getFeatureInfoDisabled: Record<string, boolean> = {
