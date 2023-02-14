@@ -87,6 +87,7 @@ app.get('/publicreviews', async (req, res) => {
     const result = await db.collection('publicreviews')
       .aggregate([
         { $match: query },
+        // get masterplans
         {
           $lookup: {
             from: 'masterplans',
@@ -94,6 +95,23 @@ app.get('/publicreviews', async (req, res) => {
             foreignField: '_id',
             as: 'masterplan'
           }
+        },
+        // count objections
+        {
+          $lookup: {
+            from: 'objections',
+            localField: '_id',
+            foreignField: 'publicReviewId',
+            as: 'objections'
+          }
+        },
+        {
+          $set: {
+            objectionsCount: { $size: '$objections' }
+          }
+        },
+        {
+          $unset: 'objections'
         }
       ])
       .toArray()

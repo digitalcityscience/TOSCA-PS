@@ -130,20 +130,22 @@ export const useMapStore = defineStore('map', () => {
     dmpLayerGroup.value = L.layerGroup();
   }
 
-  const addDMP = async (layerName: string) => {
+  const addDMP = async (layerName: string, popupContent: string) => {
     const layerInfo = await geoserver.GetFeatureType(geoserverDMPWorkspace, layerName);
     const layer = wmsToLayer(geoserverDMPWorkspace, layerInfo);
     const boundingBox = layerInfo.latLonBoundingBox;
 
     (dmpLayerGroup.value as L.LayerGroup).addLayer(layer);
 
-    // add marker
-    const marker = L.marker([
-      (boundingBox.miny + boundingBox.maxy) / 2,
-      (boundingBox.minx + boundingBox.maxx) / 2
-    ]).addTo(dmpLayerGroup.value as L.LayerGroup);
+    const popup = L.popup({ autoClose: false, closeButton: false, closeOnEscapeKey: false, closeOnClick: false })
+      .setLatLng([
+        (boundingBox.miny + boundingBox.maxy) / 2,
+        (boundingBox.minx + boundingBox.maxx) / 2
+      ])
+      .setContent(popupContent)
+      .addTo(dmpLayerGroup.value as L.LayerGroup);
 
-    return { layer, marker };
+    return { layer, popup };
   };
 
   const clearDMPs = () => {

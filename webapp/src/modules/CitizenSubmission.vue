@@ -36,7 +36,7 @@ onMounted(async () => {
       }
 
       try {
-        const { layer, marker } = await addDMP(layerName);
+        const { layer } = await addDMP(layerName, `${review.objectionsCount}`);
 
         map.value?.addLayer(layer);
         layer.bringToFront();
@@ -56,11 +56,6 @@ onMounted(async () => {
             }
           }
         }, layer);
-
-        marker.on('click', () => {
-          selectedPublicReview.value = review;
-          errors.value.publicReviewId = '';
-        });
       } catch (err) {
         pushAlert(`Layer "${layerName}" not found.`);
       }

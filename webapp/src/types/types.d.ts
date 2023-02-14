@@ -17,6 +17,7 @@ interface PublicReview {
   layerName?: string
   startDate?: string
   endDate?: string
+  objectionsCount?: number
 }
 
 interface Person {
