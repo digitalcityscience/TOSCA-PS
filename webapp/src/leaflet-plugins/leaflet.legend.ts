@@ -32,6 +32,10 @@ L.Control.Legend = L.Control.extend({
   },
 
   toggleLegendForLayer: function (layer: L.TileLayer.WMS, checked: boolean, title?: string) {
+    if (!layer?.wmsParams) {
+      return;
+    }
+
     const content = L.DomUtil.get('leaflet-legend-content');
     const elementID = 'legend_' + layer.wmsParams.layers;
 

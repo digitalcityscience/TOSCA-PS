@@ -93,7 +93,16 @@ export const useMapStore = defineStore('map', () => {
       return;
     }
 
-    const layerControl = L.control.groupedLayers(baseLayers.value, {}, { position: 'topright', collapsed: false }).addTo(map.value);
+    const layerControlTitle = 'Basemap';
+    const layerControl: any = L.control.groupedLayers({}, {}, {
+      position: 'topright',
+      collapsed: false,
+      exclusiveGroups: [layerControlTitle]
+    }).addTo(map.value);
+
+    for (const [title, layer] of Object.entries(baseLayers.value)) {
+      layerControl.addOverlay(layer, title, layerControlTitle);
+    }
 
     for (const workspace of geoserverWorkspaces) {
       const layerInfos = [];
@@ -165,7 +174,6 @@ export const useMapStore = defineStore('map', () => {
 
   return {
     map,
-    baseLayers,
     overlayMaps,
     dmpLayerGroup,
     drawings,
