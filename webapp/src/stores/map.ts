@@ -1,5 +1,4 @@
 import L from 'leaflet';
-import 'leaflet-draw';
 import 'leaflet-groupedlayercontrol';
 import '@/leaflet-plugins/leaflet.legend';
 import '@/leaflet-plugins/leaflet.getfeatureinfo';
@@ -35,7 +34,6 @@ export const useMapStore = defineStore('map', () => {
   const { geoserverUrl, geoserverDMPWorkspace } = useGlobalStore();
 
   const map = ref<L.Map>();
-  const drawings = ref<L.FeatureGroup>();
   const legend = ref<L.Control.Legend>();
   const baseLayers = ref<Record<string, L.Layer>>({
     'OSM Standard style': osm,
@@ -58,28 +56,6 @@ export const useMapStore = defineStore('map', () => {
     map.value.on('overlayremove', (event: L.LayerEvent & { name: string }) => {
       legend.value?.toggleLegendForLayer(event.layer as L.TileLayer.WMS, false);
     });
-
-    // /* Drawing tool */
-    // drawings.value = L.featureGroup().addTo(map.value);
-
-    // map.value.addControl(new L.Control.Draw({
-    //   edit: {
-    //     featureGroup: drawings.value
-    //   },
-    //   draw: {
-    //     polygon: {
-    //       showArea: true
-    //     },
-    //     polyline: false,
-    //     rectangle: false,
-    //     circle: false,
-    //     marker: false
-    //   }
-    // }));
-
-    // map.value.on(L.Draw.Event.CREATED, event => {
-    //   drawings.value?.addLayer(event.layer);
-    // });
 
     /* Scale bar */
     L.control.scale({ maxWidth: 300, position: 'bottomright' }).addTo(map.value);
@@ -178,7 +154,6 @@ export const useMapStore = defineStore('map', () => {
     map,
     overlayMaps,
     dmpLayerGroup,
-    drawings,
     initializeMap,
     initializeLayers,
     addDMP,

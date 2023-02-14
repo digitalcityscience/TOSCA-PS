@@ -1,24 +1,14 @@
 <script setup lang="ts">
-import { storeToRefs } from 'pinia';
-import { ref } from 'vue';
 import TheMap from '@/components/TheMap.vue';
 import TheNavbar from '@/components/TheNavbar.vue';
 import TheSidebar from '@/components/TheSidebar.vue';
 import AlertContainer from '@/components/AlertContainer.vue';
-import LoadingContainer from '@/components/LoadingContainer.vue';
-import ResultsModal from '@/components/ResultsModal.vue';
-import { useGlobalStore } from '@/stores/global';
-
-const globalStore = useGlobalStore();
-const { isLoading } = storeToRefs(globalStore);
-
-const showResultsModal = ref(false);
 </script>
 
 <template>
   <div class="d-flex flex-column h-100">
     <header class="card box-shadow">
-      <TheNavbar @openResults="showResultsModal = true" />
+      <TheNavbar />
     </header>
     <main class="d-flex flex-grow-1 main">
       <div id="sidebar" class="d-flex flex-column sidebar">
@@ -29,9 +19,7 @@ const showResultsModal = ref(false);
       </div>
     </main>
     <AlertContainer />
-    <LoadingContainer v-if="isLoading" />
   </div>
-  <ResultsModal v-if="showResultsModal" @close="showResultsModal = false" />
 </template>
 
 <style>

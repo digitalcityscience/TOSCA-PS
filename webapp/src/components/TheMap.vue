@@ -47,46 +47,6 @@ onMounted(() => {
     }
   }
 
-  .leaflet-draw-toolbar {
-    a {
-      background-size: 400px 40px !important;
-    }
-
-    .leaflet-draw-draw-polygon,
-    .leaflet-draw-draw-polygon.leaflet-disabled {
-      background-position: -40px 0px !important;
-    }
-
-    .leaflet-draw-draw-circlemarker,
-    .leaflet-draw-draw-circlemarker.leaflet-disabled {
-      background-position: -360px 0px !important;
-    }
-
-    .leaflet-draw-edit-edit,
-    .leaflet-draw-edit-edit.leaflet-disabled {
-      background-position: -200px 0px !important;
-    }
-
-    .leaflet-draw-edit-remove,
-    .leaflet-draw-edit-remove.leaflet-disabled {
-      background-position: -240px 0px !important;
-    }
-  }
-
-  .leaflet-draw-actions {
-    left: 40px !important;
-
-    a {
-      font: inherit !important;
-    }
-  }
-
-  .leaflet-draw-actions-top a,
-  .leaflet-draw-actions-bottom a {
-    height: 40px !important;
-    line-height: 40px !important;
-  }
-
   .leaflet-control-layers {
     width: 280px;
     max-height: calc(100% - 100px);
