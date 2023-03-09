@@ -8,6 +8,8 @@ interface Masterplan {
   molgId?: string
   layerName?: string
   created?: string
+  publicReviews?: PublicReview[]
+  objectionsCount?: number;
 }
 
 interface PublicReview {

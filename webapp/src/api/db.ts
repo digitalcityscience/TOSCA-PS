@@ -10,6 +10,16 @@ export const db = {
     return response;
   },
 
+  getMasterplan: async (id: string) => {
+    const response = await fetch(`${db.baseUrl()}masterplans/${id}`);
+    return response;
+  },
+
+  getMasterplanExport: async (id: string) => {
+    const response = await fetch(`${db.baseUrl()}masterplans/${id}/export`);
+    return response;
+  },
+
   postMasterplan: async (body: Masterplan) => {
     const response = await fetch(`${db.baseUrl()}masterplans`, {
       method: 'POST',

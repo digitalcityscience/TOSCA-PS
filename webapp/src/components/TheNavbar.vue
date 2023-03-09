@@ -2,6 +2,7 @@
 import { useGlobalStore } from '@/stores/global';
 import CitizenSubmission from '@/modules/CitizenSubmission.vue';
 import DeleteProject from '@/modules/DeleteProject.vue';
+import ExportForms from '@/modules/ExportForms.vue';
 import SetupProject from '@/modules/SetupProject.vue';
 import SetupPublicReview from '@/modules/SetupPublicReview.vue';
 
@@ -32,6 +33,9 @@ const launch = (module: Module) => {
             </li>
             <li>
               <a class="btn dropdown-item" @click="launch(DeleteProject)">Delete a DMP</a>
+            </li>
+            <li>
+              <a class="btn dropdown-item" @click="launch(ExportForms)">Export objection forms</a>
             </li>
           </ul>
         </div>

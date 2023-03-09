@@ -3,8 +3,10 @@ import express from 'express'
 import cors from 'cors'
 import bodyParser from 'body-parser'
 import multer from 'multer'
+import fs from 'fs'
 import { GridFsStorage } from 'multer-gridfs-storage'
-import { MongoClient, ObjectId } from 'mongodb'
+import { GridFSBucket, MongoClient, ObjectId } from 'mongodb'
+import { generateExport } from './export.js'
 
 dotenv.config()
 
@@ -14,6 +16,7 @@ app.use(cors())
 
 const client = new MongoClient(process.env.MONGO_CONNECTION_STRING)
 const db = client.db('molg_data')
+const bucket = new GridFSBucket(db)
 
 const jsonParser = bodyParser.json()
 const uploadParser = multer({
@@ -46,6 +49,92 @@ app.post('/masterplans', jsonParser, async (req, res) => {
     res.status(201).send(inserted)
   } catch (err) {
     res.status(400).send('Error creating masterplans')
+  }
+})
+
+app.get('/masterplans/:id', async (req, res) => {
+  const result = await db.collection('masterplans')
+    .aggregate([
+      {
+        $match: { _id: new ObjectId(req.params.id) }
+      },
+      // get the objection counts
+      {
+        $lookup: {
+          from: 'publicreviews',
+          localField: '_id',
+          foreignField: 'masterplanId',
+          as: 'publicReviews'
+        }
+      },
+      {
+        $lookup: {
+          from: 'objections',
+          localField: 'publicReviews._id',
+          foreignField: 'publicReviewId',
+          as: 'objections',
+        }
+      },
+      {
+        $set: {
+          'objectionsCount': { $size: '$objections' }
+        }
+      },
+      {
+        $unset: 'objections'
+      }
+    ])
+    .next()
+
+  res.json(result)
+})
+
+app.get('/masterplans/:id/export', async (req, res) => {
+  try {
+    const id = req.params.id
+    const report = await db.collection('masterplans')
+      .aggregate([
+        {
+          $match: { _id: new ObjectId(id) }
+        },
+        {
+          $lookup: {
+            from: 'publicreviews',
+            localField: '_id',
+            foreignField: 'masterplanId',
+            as: 'publicReviews'
+          }
+        },
+        {
+          $lookup: {
+            from: 'objections',
+            localField: 'publicReviews._id',
+            foreignField: 'publicReviewId',
+            as: 'objections',
+          }
+        },
+        {
+          $lookup: {
+            from: 'fs.files',
+            localField: 'objections.attachmentId',
+            foreignField: '_id',
+            as: 'attachments',
+          }
+        }
+      ])
+      .next()
+
+    const workdir = `export/dmp-${id}`
+
+    fs.mkdirSync(workdir, { recursive: true })
+
+    const zipfile = await generateExport(workdir, report, bucket)
+    res.download(zipfile)
+
+    // clean up
+    fs.rmSync(workdir, { recursive: true })
+  } catch (err) {
+    res.status(400).send('Error generating export')
   }
 })
 
