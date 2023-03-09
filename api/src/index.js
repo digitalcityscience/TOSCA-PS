@@ -51,22 +51,22 @@ app.post('/masterplans', jsonParser, async (req, res) => {
 
 app.delete('/masterplans/:id', async (req, res) => {
   try {
-    await db.collection('masterplans').findOne({ _id: ObjectId(req.params.id) })
+    await db.collection('masterplans').findOne({ _id: new ObjectId(req.params.id) })
   } catch (err) {
     res.status(404).send(`Error: masterplan with ID ${req.params.id} not found`)
     return
   }
 
   // find associated public reviews and objections and delete them
-  const publicreviews = await db.collection('publicreviews').find({ masterplanId: ObjectId(req.params.id) }).toArray()
+  const publicreviews = await db.collection('publicreviews').find({ masterplanId: new ObjectId(req.params.id) }).toArray()
 
   for (const publicreview of publicreviews) {
     await db.collection('objections').deleteMany({ publicReviewId: publicreview._id })
   }
-  await db.collection('publicreviews').deleteMany({ masterplanId: ObjectId(req.params.id) })
+  await db.collection('publicreviews').deleteMany({ masterplanId: new ObjectId(req.params.id) })
 
   // delete the masterplan
-  await db.collection('masterplans').deleteOne({ _id: ObjectId(req.params.id) })
+  await db.collection('masterplans').deleteOne({ _id: new ObjectId(req.params.id) })
 
   res.status(200).send()
 })
@@ -134,13 +134,13 @@ app.post('/publicreviews', jsonParser, async (req, res) => {
   }
 
   // check if masterplan exists
-  if (!await db.collection('masterplans').findOne({ _id: ObjectId(req.body.masterplanId) })) {
+  if (!await db.collection('masterplans').findOne({ _id: new ObjectId(req.body.masterplanId) })) {
     res.status(404).send(`Error: masterplan with ID ${req.body.masterplanId} not found`)
     return
   }
 
   const document = {
-    masterplanId: ObjectId(req.body.masterplanId),
+    masterplanId: new ObjectId(req.body.masterplanId),
     startDate,
     endDate,
     created: new Date()
@@ -157,7 +157,7 @@ app.post('/publicreviews', jsonParser, async (req, res) => {
 app.get('/publicreviews/:id/objections', async (req, res) => {
   try {
     const result = await db.collection('objections').find({
-      publicReviewId: ObjectId(req.params.id)
+      publicReviewId: new ObjectId(req.params.id)
     }).toArray()
     res.json(result)
   } catch (err) {
@@ -167,13 +167,13 @@ app.get('/publicreviews/:id/objections', async (req, res) => {
 
 app.post('/publicreviews/:id/objections', jsonParser, async (req, res) => {
   // check if public review exists
-  if (!await db.collection('publicreviews').findOne({ _id: ObjectId(req.params.id) })) {
+  if (!await db.collection('publicreviews').findOne({ _id: new ObjectId(req.params.id) })) {
     res.status(404).send(`Error: public review with ID ${req.params.id} not found`)
     return
   }
 
   const document = {
-    publicReviewId: ObjectId(req.params.id),
+    publicReviewId: new ObjectId(req.params.id),
     person: req.body.person,
     category: req.body.category,
     comment: req.body.comment,
@@ -192,7 +192,7 @@ app.post('/objections/:id/attachments', uploadParser.array('attachment'), async 
   try {
     for (const file of req.files) {
       await db.collection('objections').updateOne(
-        { _id: ObjectId(req.params.id) },
+        { _id: new ObjectId(req.params.id) },
         { $set: { attachmentId: file.id } }
       )
     }
@@ -203,7 +203,6 @@ app.post('/objections/:id/attachments', uploadParser.array('attachment'), async 
 
   res.status(201).send()
 })
-
 
 // start listening
 app.listen(port, () => {
