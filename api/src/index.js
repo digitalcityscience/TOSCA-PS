@@ -134,6 +134,7 @@ app.get('/masterplans/:id/export', async (req, res) => {
     // clean up
     fs.rmSync(workdir, { recursive: true })
   } catch (err) {
+    console.error(err)
     res.status(400).send('Error generating export')
   }
 })
