@@ -1,5 +1,8 @@
 FROM node:lts
 
+RUN apt-get update
+RUN apt-get install -y chromium
+
 WORKDIR /app
 
 COPY package* /app

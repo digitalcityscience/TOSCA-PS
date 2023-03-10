@@ -5,7 +5,9 @@ import archiver from 'archiver'
 export function generateExport(workdir, report, bucket) {
   return new Promise(async (resolve, reject) => {
     try {
-      const browser = await puppeteer.launch()
+      const browser = await puppeteer.launch({
+        args: ['--no-sandbox']
+      })
       const page = await browser.newPage()
 
       const objectionTemplates = {}
