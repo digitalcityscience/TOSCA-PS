@@ -10,7 +10,6 @@ services:
       - type: volume
         source: geoserver_data
         target: /usr/share/geoserver/data_dir
-      - /home/ortak/Desktop:/mnt
     environment:
       - GEOSERVER_CSRF_DISABLED=true
 
