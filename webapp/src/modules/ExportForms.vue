@@ -58,14 +58,16 @@ const submit = async () => {
     <p>Please select from the dropdown menu the DMP from which you want to export the forms.</p>
     <fieldset class="mb-3">
       <label for="newPublicReviewMasterplan">DMP title:</label>
-      <select id="newPublicReviewMasterplan" v-model="selectedMasterplan" class="form-select" @change="onMasterplanChange()">
+      <select id="newPublicReviewMasterplan" v-model="selectedMasterplan" class="form-select"
+        @change="onMasterplanChange()">
         <option v-for="masterplan in masterplans" :key="masterplan._id" :value="masterplan">
           {{ masterplan.title }} ({{ masterplan.molgId }})
         </option>
       </select>
     </fieldset>
     <div v-if="selectedMasterplan">
-      <p>A total of {{ selectedMasterplan.objectionsCount }} form(s) have been collected. Please click below to export the documents. These will be downloaded to your computer.</p>
+      <p>A total of {{ selectedMasterplan.objectionsCount }} form(s) have been collected. Please click below to export
+        the documents. These will be downloaded to your computer.</p>
     </div>
     <template #actions v-if="selectedMasterplan">
       <ModuleButton class="primary" @click="submit()">Export</ModuleButton>

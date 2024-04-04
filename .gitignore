@@ -6,3 +6,6 @@ node_modules
 /geoserver_data_dir/gwc-layers
 /geoserver_data_dir/logs/geoserver.log*
 /geoserver_data_dir/security
+api/export/*
+api/.env
+webapp/.env

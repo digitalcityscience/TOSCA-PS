@@ -43,10 +43,10 @@ const submit = async () => {
 
 <template>
   <ModuleStep v-if="activeModuleStep === 0">
-    <h1>Deleting a DMP</h1>
+    <h1>Deleting a campaign</h1>
     <p>Please select from the dropdown menu the DMP you would like to delete.</p>
     <fieldset class="mb-3">
-      <label for="newPublicReviewMasterplan">DMP title:</label>
+      <label for="newPublicReviewMasterplan">Campaign title:</label>
       <select id="newPublicReviewMasterplan" v-model="selectedMasterplan" class="form-select">
         <option v-for="masterplan in masterplans" :key="masterplan._id" :value="masterplan">
           {{ masterplan.title }} ({{ masterplan.molgId }})
@@ -54,8 +54,9 @@ const submit = async () => {
       </select>
     </fieldset>
     <div v-if="selectedMasterplan">
-      <p>Are you sure you want to delete this DMP?</p>
-      <p>If it is a published DMP, all objections linked to this DMP will be deleted and cannot be recovered.</p>
+      <p>Are you sure you want to delete this campaign?</p>
+      <p>If it is a published campaign, all objections linked to this campaign will be deleted and cannot be recovered.
+      </p>
     </div>
     <template #actions v-if="selectedMasterplan">
       <ModuleButton class="danger" @click="submit()">Delete</ModuleButton>

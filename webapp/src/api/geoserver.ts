@@ -1,4 +1,4 @@
-import { useGlobalStore } from '@/stores/global';
+import { useGlobalStore } from "@/stores/global";
 
 export const geoserver = {
   baseUrl() {
@@ -6,9 +6,11 @@ export const geoserver = {
   },
 
   fetchWithCredentials: (url: string) => {
-    return fetch(url, { headers: new Headers({
-      'Authorization': `Basic ${useGlobalStore().geoserverBasicAuth}`
-    }) });
+    return fetch(url, {
+      headers: new Headers({
+        Authorization: `Basic ${useGlobalStore().geoserverBasicAuth}`,
+      }),
+    });
   },
 
   GetFeatureTypes: async (workspaceName: string) => {
@@ -41,5 +43,22 @@ export const geoserver = {
     );
     const data: GS.WMSLayer = await response.json();
     return data.wmsLayer;
+  },
+  GetRasterLayers: async (workspaceName: string) => {
+    // For raster layers we define 2 new functions.
+    // This function return detail of Workspace
+    const response = await geoserver.fetchWithCredentials(
+      `${geoserver.baseUrl()}workspaces/${workspaceName}/coverages.json`
+    );
+
+    const data = await response.json();
+    return data.coverages?.coverage || [];
+  },
+  GetRasterLayer: async (href: string) => {
+    // return layer detail
+    const response = await geoserver.fetchWithCredentials(href);
+
+    const data = await response.json();
+    return data.coverage || [];
   },
 };

@@ -1,4 +1,5 @@
 # Toolkit for Open and Sustainable City Planning and Analysis
+
 Welcome to the Toolkit for Open and Sustainable City Planning and Analysis!
 
 The Toolkit for Open and Sustainable City Planning and Analysis (TOSCA) was developed in cooperation between the Digital City Science of the HafenCity University Hamburg (HCU) and Deutsche Gesellschaft für Internationale Zusammenarbeit GmbH (GIZ) in India, Ecuador and Palestine. It is an open source tool and the software for this project is based entirely on open source components. TOSCA is a web-based geographic information system (GIS) for multi-touch tables that is optimised for the use by non-GIS-experts. It supports integrated and participatory urban planning processes, fostering dialogue between governments and citizens and exchange of knowledge and data between government departments. The main functionality of the TOSCA is to visualise and analyse complex urban data, jointly among local practitioners and with citizens.
@@ -13,10 +14,10 @@ In order to deploy TOSCA, you need a server that runs a recent version of [Docke
 
 Clone this repository onto your server. Before building and starting the stack with [Docker Compose](https://docs.docker.com/compose/), take a look at the `docker-compose.yaml` file in the root directory of your clone. In this file the services comprising the TOSCA stack are defined:
 
-- `geoserver`: the *GeoServer* backend that keeps your geodata
-- `db`: the *mongoDB* database for project metadata and user input
-- `api`: the *Node.js* backend that provides read and write access to the database
-- `webapp`: the *Vue.js* frontend
+- `geoserver`: the _GeoServer_ backend that keeps your geodata
+- `db`: the _mongoDB_ database for project metadata and user input
+- `api`: the _Node.js_ backend that provides read and write access to the database
+- `webapp`: the _Vue.js_ frontend
 
 Make sure that the ports defined in the file are free to use. If some of the ports cannot be used, change them, but be careful to change them in all places where they are defined.
 

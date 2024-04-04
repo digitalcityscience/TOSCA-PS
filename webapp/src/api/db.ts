@@ -1,4 +1,4 @@
-import { useGlobalStore } from '@/stores/global';
+import { useGlobalStore } from "@/stores/global";
 
 export const db = {
   baseUrl() {
@@ -22,9 +22,9 @@ export const db = {
 
   postMasterplan: async (body: Masterplan) => {
     const response = await fetch(`${db.baseUrl()}masterplans`, {
-      method: 'POST',
+      method: "POST",
       body: JSON.stringify(body),
-      headers: new Headers({ 'Content-Type': 'application/json' })
+      headers: new Headers({ "Content-Type": "application/json" }),
     });
     if (!response.ok) {
       const message = await response.text();
@@ -35,7 +35,7 @@ export const db = {
 
   deleteMasterplan: async (id: string) => {
     const response = await fetch(`${db.baseUrl()}masterplans/${id}`, {
-      method: 'DELETE'
+      method: "DELETE",
     });
     if (!response.ok) {
       const message = await response.text();
@@ -48,12 +48,16 @@ export const db = {
     const response = await fetch(`${db.baseUrl()}publicreviews?valid=now`);
     return response;
   },
+  getPublicReviewsAll: async () => {
+    const response = await fetch(`${db.baseUrl()}publicreviews`);
+    return response;
+  },
 
   postPublicReview: async (body: PublicReview) => {
     const response = await fetch(`${db.baseUrl()}publicreviews`, {
-      method: 'POST',
+      method: "POST",
       body: JSON.stringify(body),
-      headers: new Headers({ 'Content-Type': 'application/json' })
+      headers: new Headers({ "Content-Type": "application/json" }),
     });
     if (!response.ok) {
       const message = await response.text();
@@ -63,11 +67,14 @@ export const db = {
   },
 
   postObjection: async (body: Objection, publicReviewId: string) => {
-    const response = await fetch(`${db.baseUrl()}publicreviews/${publicReviewId}/objections`, {
-      method: 'POST',
-      body: JSON.stringify(body),
-      headers: new Headers({ 'Content-Type': 'application/json' })
-    });
+    const response = await fetch(
+      `${db.baseUrl()}publicreviews/${publicReviewId}/objections`,
+      {
+        method: "POST",
+        body: JSON.stringify(body),
+        headers: new Headers({ "Content-Type": "application/json" }),
+      }
+    );
     if (!response.ok) {
       const message = await response.text();
       throw new Error(message);
@@ -76,14 +83,17 @@ export const db = {
   },
 
   postAttachment: async (formData: FormData, objectionId: string) => {
-    const response = await fetch(`${db.baseUrl()}objections/${objectionId}/attachments`, {
-      method: 'POST',
-      body: formData
-    });
+    const response = await fetch(
+      `${db.baseUrl()}objections/${objectionId}/attachments`,
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
     if (!response.ok) {
       const message = await response.text();
       throw new Error(message);
     }
     return response;
-  }
-}
+  },
+};

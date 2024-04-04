@@ -11,11 +11,11 @@ const { initializeMap, initializeLayers } = useMapStore();
 onMounted(() => {
   initializeMap('map', {
     center: new L.LatLng(initialLatitude, initialLongitude),
-    zoom: 10,
+    zoom: 13,
     minZoom: 7,
-    touchZoom: true
+    touchZoom: true,
+    zoomControl: true, zoomAnimation: false, fadeAnimation: true, markerZoomAnimation: true
   });
-
   initializeLayers();
 });
 </script>
@@ -38,6 +38,7 @@ onMounted(() => {
   }
 
   .leaflet-bar {
+
     a,
     a:hover {
       width: 40px !important;

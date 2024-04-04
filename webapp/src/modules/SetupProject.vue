@@ -67,16 +67,16 @@ const submit = async () => {
 
 <template>
   <ModuleStep v-if="activeModuleStep === 0">
-    <h1>Setting up a DMP</h1>
-    <p>Fill in the data about the new detailed master plan.</p>
+    <h1>Setting up a new campaing</h1>
+    <p>Fill in the data about the new campaing.</p>
     <fieldset>
       <div>
-        <label for="newProjectTitle">DMP title:</label>
+        <label for="newProjectTitle">Campaing title:</label>
         <input type="text" id="newProjectTitle" v-model="newProject.title" class="form-control" />
         <div v-if="errors.title" class="error">{{ errors.title }}</div>
       </div>
       <div>
-        <label for="newProjectMolgId">MoLG ID:</label>
+        <label for="newProjectMolgId">Campaing ID:</label>
         <input type="text" id="newProjectMolgId" v-model="newProject.molgId" class="form-control" />
         <div v-if="errors.molgId" class="error">{{ errors.molgId }}</div>
       </div>

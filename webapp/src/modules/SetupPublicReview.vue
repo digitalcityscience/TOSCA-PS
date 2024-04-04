@@ -67,11 +67,11 @@ const submit = async () => {
 
 <template>
   <ModuleStep v-if="activeModuleStep === 0">
-    <h1>Publishing a DMP for public review</h1>
+    <h1>Publishing a campaign for public review</h1>
     <p>Fill in the form to set up a public review.</p>
     <fieldset>
       <div>
-        <label for="newPublicReviewMasterplan">Master plan:</label>
+        <label for="newPublicReviewMasterplan">Target campaign:</label>
         <select id="newPublicReviewMasterplan" v-model="newPublicReview.masterplanId" class="form-select">
           <option v-for="masterplan in masterplans" :key="masterplan._id" :value="masterplan._id">
             {{ masterplan.title }} ({{ masterplan.molgId }})
