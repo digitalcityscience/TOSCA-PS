@@ -44,7 +44,7 @@ const submit = async () => {
 <template>
   <ModuleStep v-if="activeModuleStep === 0">
     <h1>Deleting a campaign</h1>
-    <p>Please select from the dropdown menu the DMP you would like to delete.</p>
+    <p>Please select from the dropdown menu the campaign you would like to delete.</p>
     <fieldset class="mb-3">
       <label for="newPublicReviewMasterplan">Campaign title:</label>
       <select id="newPublicReviewMasterplan" v-model="selectedMasterplan" class="form-select">

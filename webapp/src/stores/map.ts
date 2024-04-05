@@ -19,7 +19,7 @@ const hot = L.tileLayer(
   }
 );
 
-const geoserverWorkspaces = ["Wadi"];
+const geoserverWorkspaces = ["Wadi", "vector"];
 
 const getFeatureInfoAttributes: Record<string, string[]> = {
   Area_ABC: ["LandClas_1", "LandClas_3"],

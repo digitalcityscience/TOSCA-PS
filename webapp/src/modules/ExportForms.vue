@@ -55,9 +55,9 @@ const submit = async () => {
 <template>
   <ModuleStep v-if="activeModuleStep === 0">
     <h1>Export objection forms</h1>
-    <p>Please select from the dropdown menu the DMP from which you want to export the forms.</p>
+    <p>Please select from the dropdown menu the campaign from which you want to export the forms.</p>
     <fieldset class="mb-3">
-      <label for="newPublicReviewMasterplan">DMP title:</label>
+      <label for="newPublicReviewMasterplan">Campaign title:</label>
       <select id="newPublicReviewMasterplan" v-model="selectedMasterplan" class="form-select"
         @change="onMasterplanChange()">
         <option v-for="masterplan in masterplans" :key="masterplan._id" :value="masterplan">

@@ -1,17 +1,21 @@
-import { defineStore } from 'pinia';
-import { ref, shallowRef } from 'vue';
+import { defineStore } from "pinia";
+import { ref, shallowRef } from "vue";
 
-export const useGlobalStore = defineStore('global', () => {
-  let apiUrl: string = import.meta.env.VITE_API_URL || '';
+export const useGlobalStore = defineStore("global", () => {
+  let apiUrl: string = import.meta.env.VITE_API_URL || "";
   if (!apiUrl.match(/\/$/)) {
-    apiUrl += '/'
+    apiUrl += "/";
   }
 
-  let geoserverUrl: string = import.meta.env.VITE_GEOSERVER_URL || '';
+  let geoserverUrl: string = import.meta.env.VITE_GEOSERVER_URL || "";
   if (!geoserverUrl.match(/\/$/)) {
-    geoserverUrl += '/'
+    geoserverUrl += "/";
   }
-  const geoserverBasicAuth = btoa(`${import.meta.env.VITE_GEOSERVER_USERNAME || ''}:${import.meta.env.VITE_GEOSERVER_PASSWORD || ''}`)
+  const geoserverBasicAuth = btoa(
+    `${import.meta.env.VITE_GEOSERVER_USERNAME || ""}:${
+      import.meta.env.VITE_GEOSERVER_PASSWORD || ""
+    }`
+  );
   const geoserverDMPWorkspace = import.meta.env.VITE_GEOSERVER_DMP_WORKSPACE;
 
   const activeModule = shallowRef<Module | null>(null);
@@ -35,6 +39,6 @@ export const useGlobalStore = defineStore('global', () => {
     activeModule,
     activeModuleStep,
     setActiveModule,
-    exitModule
+    exitModule,
   };
 });
