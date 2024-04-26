@@ -9,3 +9,6 @@ node_modules
 api/export/*
 api/.env
 webapp/.env
+/mongo_data
+/data_dir
+/raw_data

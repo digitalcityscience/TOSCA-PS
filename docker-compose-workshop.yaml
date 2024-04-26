@@ -1,9 +1,6 @@
-version: "3.7"
-
 services:
   geoserver:
-    build: ./geoserver
-    image: tosca/geoserver
+    image: orttak/tosca-geoserver-hh-wasser
     ports:
       - 8080:8080
     volumes:
@@ -13,15 +10,14 @@ services:
       - GEOSERVER_CSRF_DISABLED=true
 
   db:
-    image: mongo
+    image: mongo:latest
     ports:
       - 27017:27017
     volumes:
-      - ./mongo_data:/data/db
+      - mongodata:/data/db
 
   api-hh:
-    build: ./api
-    image: tosca/api
+    image: orttak/tosca-ps-api
     ports:
       - 3000:3000
     environment:
@@ -29,7 +25,9 @@ services:
       - MONGO_CONNECTION_STRING=mongodb://db:27017
 
   webapp:
-    build: ./webapp
-    image: tosca/webapp
+    image: orttak/tosca-ps-webapp
     ports:
       - 80:80
+volumes:
+  mongodata:
+    driver: local

@@ -38,3 +38,5 @@ docker compose up
 ```
 
 If there are no errors, the frontend will become available at your server's IP address or hostname, port 80.
+
+nodemon src/index.js

@@ -11,7 +11,7 @@ const { initializeMap, initializeLayers } = useMapStore();
 onMounted(() => {
   initializeMap('map', {
     center: new L.LatLng(initialLatitude, initialLongitude),
-    zoom: 13,
+    zoom: 12,
     minZoom: 7,
     touchZoom: true,
     zoomControl: true, zoomAnimation: false, fadeAnimation: true, markerZoomAnimation: true
